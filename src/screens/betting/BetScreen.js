@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
+import { PlayerService } from '../../services/player.service';
 
 const styles = StyleSheet.create({
     container: {
@@ -23,7 +24,13 @@ const styles = StyleSheet.create({
     }
 });
 
+const playerService = new PlayerService();
+
 class BetScreen extends Component {
+
+    static defaultProps = {
+        playerService
+    }
 
     constructor() {
         super()
@@ -34,6 +41,11 @@ class BetScreen extends Component {
             show: true
         }
         this.updateIndex = this.updateIndex.bind(this)
+    }
+
+    async componentDidMount() {
+        const player = await this.props.playerService.getOne(this.props.route.params.player.username);
+        console.log(player);
     }
 
     updateIndex(selectedIndex) {
@@ -60,15 +72,19 @@ class BetScreen extends Component {
         }
     }
 
-    ValiderPanier = () => {
-        if (this.state.selectedIndex >= 0 && this.state.goaldiff !== 0 && this.state.betting !== 0){
-            console.log(this.state.betting * this.state.goaldiff)
+    ValiderPanier = async () => {
+        const player = this.props.route.params.player;
+        if (this.state.selectedIndex >= 0 && this.state.goaldiff !== 0 && this.state.betting !== 0) {
+            player.bet.push(this.props.route.params.match);
+            console.log(player.bet);
+            await this.props.playerService.update(player._id, player);
             this.props.navigation.navigate('Home');
         }
     }
 
     render() {
-        console.log(this.props.route.params)
+
+        const player = this.props.route.params.player;
         const { homeTeam } = this.props.route.params.match;
         const { awayTeam } = this.props.route.params.match;
         const buttons = [homeTeam, 'Match Nul', awayTeam];
@@ -76,6 +92,7 @@ class BetScreen extends Component {
 
         return (
             <View style={styles.container}>
+                <Text> COINS : {player.coins}</Text>
                 <ButtonGroup
                     onPress={this.updateIndex}
                     selectedIndex={selectedIndex}

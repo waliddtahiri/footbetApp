@@ -2,13 +2,7 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:5000/competitions';
 
-const competitionId = '5e3a11520328023cb0f6f0a2';
-
-class MatchApi {
-    constructor() {
-        this.compId = competitionId;
-        this.path = `/${this.compId}`
-    }
+class CompetitionService {
 
     async getId(i) {
         let competitions = [];
@@ -38,5 +32,5 @@ class MatchApi {
 }
 
 export {
-    MatchApi
+    CompetitionService
 };

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BetScreen } from '../betting';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import NestedListView, { NestedRow } from 'react-native-nested-listview'
-import { MatchApi } from '../../../api';
+import { CompetitionService } from '../../services/competition.service';
 import { LoadingScreen } from '../../commons';
 import { withTheme } from 'react-native-elements';
 
@@ -29,11 +29,11 @@ const styles = StyleSheet.create({
 
 });
 
-const matchApi = new MatchApi();
+const competitionService = new CompetitionService();
 
 class HomeScreen extends Component {
     static defaultProps = {
-        matchApi
+        competitionService
     }
 
     state = {
@@ -44,14 +44,16 @@ class HomeScreen extends Component {
 
     async componentDidMount() {
         this.setState({ loading: true });
-        const postsSA = await this.props.matchApi.fetchCompetitionMatchesSA();
+        const postsSA = await this.props.competitionService.fetchCompetitionMatchesSA();
         console.log(postsSA);
-        const postsLiga = await this.props.matchApi.fetchCompetitionMatchesLiga();
+        const postsLiga = await this.props.competitionService.fetchCompetitionMatchesLiga();
         this.setState({ loading: false, matchsSA: postsSA, matchsLiga: postsLiga });
     }
 
 
     render() {
+
+        const player = this.props.route.params.player;
 
         const postsSA = [];
         const postsLiga = [];
@@ -74,12 +76,13 @@ class HomeScreen extends Component {
 
         return (
             <View style={styles.container}>
+                <Text>WELCOME {player.username.toUpperCase()}</Text>
                 <NestedListView
                     data={data}
                     getChildrenName={(node) => 'matchs'}
                     onNodePressed={(node) => {
                         if (node.title !== 'Serie A' && node.title !== 'Liga') {
-                            this.props.navigation.navigate('Betting', { match: node })
+                            this.props.navigation.navigate('Betting', { match: node, player: player })
                         }
                     }
                     }

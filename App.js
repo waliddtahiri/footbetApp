@@ -12,6 +12,7 @@ class App extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Betting" component={BetScreen} />
         </Stack.Navigator>

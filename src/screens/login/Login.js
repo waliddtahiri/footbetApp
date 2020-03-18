@@ -9,40 +9,62 @@ import {
     TouchableOpacity,
     AsyncStorage,
 } from 'react-native';
+import axios from 'axios';
+
+import {
+    getFromStorage,
+    setInStorage,
+} from '../../utils/storage'
 
 class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '' };
+        this.state = {
+            username: '',
+            password: '',
+            token: '',
+            signUpError: '',
+            signInError: '',
+        };
+    }
+
+    componentDidMount() {
+        const obj = getFromStorage('the_main_app');
+        if (obj && obj.token) {
+            const { token } = obj;
+            axios.get('http://192.168.0.239:5000/signin/verify?token=' + token)
+                .then(res => {
+                    if (res.data.success) {
+                        this.setState({
+                            token,
+                        });
+                    }
+                });
+        }
     }
 
     login = () => {
-        fetch('http://192.168.0.239', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password,
-            })
-        })
-
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.success === true) {
-                    //var username = res.message;
-
-                    //AsyncStorage.setItem('username', username);
-
-                    this.props.navigation.navigate('Home');
-
-                } else {
-                    alert(res.message);
-                }
-            }).done();
+        axios.post('http://192.168.0.239:5000/account/signin', {
+            username: this.state.username,
+            password: this.state.password
+        }).then(res => {
+            console.log(res)
+              if (res.data.success){
+                  setInStorage('the_main_app', {token : res.token});
+                  this.setState({
+                      signInError: res.message,
+                      username: '',
+                      password: '',
+                      token: res.token,
+                  });
+                  this.props.navigation.navigate('Home', {player: res.data.player})
+              } else {
+                  this.setState({
+                      signInError: res.message,
+                  });
+              }
+          })
     }
 
 
