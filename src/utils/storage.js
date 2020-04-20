@@ -1,6 +1,6 @@
 import {AsyncStorage} from 'react-native';
 
-export function getFromStorage(key) {
+export async function getFromStorage(key) {
     if (!key) {
         return null;
     }
@@ -16,7 +16,7 @@ export function getFromStorage(key) {
     }
 }
 
-export function setInStorage(key, obj) {
+export async function setInStorage(key, obj) {
     if(!key) {
         console.error('Error: Key is missing');
     }
@@ -25,5 +25,19 @@ export function setInStorage(key, obj) {
         AsyncStorage.setItem(key, JSON.stringify(obj));
     } catch (err) {
         console.error(err);
+    }
+}
+
+export async function removeFromStorage(key) {
+    if(!key) {
+        console.error('Error: Key is missing');
+    }
+    try {
+        await AsyncStorage.removeItem(key);
+        return true;
+    }
+    catch(err) {
+        console.error(err);
+        return false;
     }
 }

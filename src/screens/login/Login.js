@@ -1,32 +1,40 @@
 import React, { Component } from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
     ImageBackground,
     TextInput,
-    TouchableOpacity,
-    AsyncStorage,
+    TouchableOpacity
 } from 'react-native';
 import axios from 'axios';
+import { register } from '../../actions/authActions';
+import { clearErrors } from '../../actions/errorActions';
 
 import {
     getFromStorage,
     setInStorage,
-} from '../../utils/storage'
+} from '../../utils/storage';
+
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 
 class Login extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: '',
-            password: '',
-            token: '',
-            signUpError: '',
-            signInError: '',
-        };
+    state = {
+        username: '',
+        password: '',
+        token: '',
+        signUpError: '',
+        signInError: '',
+        msg: null
+    };
+
+    static propTypes = {
+        isAuthenticated: PropTypes.bool,
+        error: PropTypes.object.isRequired,
+        register: PropTypes.func.isRequired
     }
 
     componentDidMount() {
@@ -45,26 +53,41 @@ class Login extends Component {
     }
 
     login = () => {
+
+        const username = this.state.username.toLowerCase();
+        const password = this.state.password;
+
+        // create user object
+        const user = {
+            username,
+            password
+        };
+
+        // attempt to register
+        this.props.register(user);
+    }
+
+    login2 = () => {
         axios.post('http://192.168.0.239:5000/account/signin', {
             username: this.state.username,
             password: this.state.password
         }).then(res => {
             console.log(res)
-              if (res.data.success){
-                  setInStorage('the_main_app', {token : res.token});
-                  this.setState({
-                      signInError: res.message,
-                      username: '',
-                      password: '',
-                      token: res.token,
-                  });
-                  this.props.navigation.navigate('Home', {player: res.data.player})
-              } else {
-                  this.setState({
-                      signInError: res.message,
-                  });
-              }
-          })
+            if (res.data.success) {
+                setInStorage('the_main_app', { token: res.token });
+                this.setState({
+                    signInError: res.message,
+                    username: '',
+                    password: '',
+                    token: res.token,
+                });
+                this.props.authSuccess(this.state.token);
+            } else {
+                this.setState({
+                    signInError: res.message,
+                });
+            }
+        })
     }
 
 
@@ -91,7 +114,7 @@ class Login extends Component {
             </View>
         )
     }
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -149,4 +172,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    error: state.error
+});
+
+export default connect(mapStateToProps, { register })(Login);
+

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
-import { ButtonGroup } from 'react-native-elements';
 import { PlayerService } from '../../services/player.service';
-import { BetService } from '../../services/bet.service';
+import { DuelService } from '../../services/duel.service';
+
+import { Dropdown } from 'react-native-material-dropdown';
 
 const styles = StyleSheet.create({
     container: {
@@ -26,29 +27,43 @@ const styles = StyleSheet.create({
 });
 
 const playerService = new PlayerService();
-const betService = new BetService();
+const duelService = new DuelService();
 
-class BetScreen extends Component {
+class DuelScreen extends Component {
 
     static defaultProps = {
         playerService,
-        betService
+        duelService
     }
 
     constructor() {
         super()
         this.state = {
-            selectedIndex: 0,
             homeScore: 0,
             awayScore: 0,
             betting: 0,
+            opponent: null,
+            players: [],
+            player2: null,
+            duel: null,
+            numero: null,
             show: true
         }
         this.updateIndex = this.updateIndex.bind(this)
     }
 
     async componentDidMount() {
-        const player = await this.props.playerService.getOne(this.props.route.params.player.username);
+        const array = [];
+        const players = await this.props.playerService.getAll();
+        players.forEach(player => {
+            if (player.username != this.props.route.params.player.username) {
+                array.push({ value: player.username })
+            }
+        });
+        this.setState({
+            players: array
+        })
+        console.log(this.state.players);
     }
 
     updateIndex(selectedIndex) {
@@ -85,27 +100,31 @@ class BetScreen extends Component {
         }
     }
 
-    ValiderPanier = async () => {
+    ValiderDuel = async () => {
         const player = this.props.route.params.player;
+        const player2 = this.state.player2;
         const match = this.props.route.params.match;
-        const { homeTeam } = match;
-        const { awayTeam } = match;
-        const buttons = [homeTeam, 'Match Nul', awayTeam];
-        const { selectedIndex } = this.state;
 
         let homeScore = this.state.homeScore;
         let awayScore = this.state.awayScore;
         let betting = this.state.betting;
-        let winner = buttons[selectedIndex];
 
-        if (this.state.selectedIndex >= 0 && betting !== 0 && betting <= player.coins) {
-            let bet = { match: match.info, homeScore, awayScore, winner, betting };
+        let challenger = {
+            opponent: player2, match: match.info, homeScore,
+            awayScore, betting, status: "Sent"
+        };
 
-            //console.log(bet);
-            console.log(this.props.playerService.addBet(player._id, bet));
-            this.props.navigation.navigate('Matches');
-        }
+        console.log(player2);
+        //console.log(duelChallenger);
+        //console.log(match.info);
+
+        this.props.playerService.addDuel(player._id, challenger);
+
+        //this.props.playerService.addDuelPlayer2(player2._id, duel);
+
+        this.props.navigation.navigate('Matches');
     }
+
 
     render() {
 
@@ -115,16 +134,23 @@ class BetScreen extends Component {
         const buttons = [homeTeam, 'Match Nul', awayTeam];
         const { selectedIndex } = this.state;
 
+        const onChangeHandler = async (value) => {
+            this.setState({
+                opponent: value
+            })
+            let player2 = await this.props.playerService.getOne(this.state.opponent);
+            this.setState({
+                player2: player2
+            })
+        }
+
         return (
             <View style={styles.container}>
-                <Text> COINS : {player.coins}</Text>
-                <ButtonGroup
-                    onPress={this.updateIndex}
-                    selectedIndex={selectedIndex}
-                    buttons={buttons}
-                    containerStyle={{ height: 100 }}
+                <Dropdown
+                    label='Opponent'
+                    data={this.state.players}
+                    onChangeText={value => onChangeHandler(value)}
                 />
-                <Text style={styles.text}>{'Votre pariez sur : ' + buttons[selectedIndex]}</Text>
                 <View style={styles.container2}>
                     <Text style={styles.text}>Score Domicile :</Text>
                     <Button title="+" onPress={this.IncrementHomeGoals} />
@@ -144,11 +170,11 @@ class BetScreen extends Component {
                     <Button title="-" onPress={this.DecreaseItem} />
                 </View>
                 <View style={styles.container2}>
-                    <Button title="Valider Pari" onPress={this.ValiderPanier} />
+                    <Button title="Valider Duel" onPress={this.ValiderDuel} />
                 </View>
             </View>
         );
     }
 }
 
-export default BetScreen;
+export default DuelScreen;
