@@ -96,12 +96,22 @@ class BetScreen extends Component {
         let homeScore = this.state.homeScore;
         let awayScore = this.state.awayScore;
         let betting = this.state.betting;
-        let winner = buttons[selectedIndex];
+        let winner = ' ';
 
         if (this.state.selectedIndex >= 0 && betting !== 0 && betting <= player.coins) {
-            let bet = { match: match.info, homeScore, awayScore, winner, betting };
 
-            //console.log(bet);
+            if(selectedIndex === 0){
+                winner = "HOME_TEAM"
+            }
+            else if(selectedIndex === 1){
+                winner = "DRAW"
+            }
+            else if(selectedIndex === 2){
+                winner = "AWAY_TEAM"
+            }
+
+            let bet = { match: match.info, homeScore, awayScore, winner, betting };
+            console.log(bet);
             console.log(this.props.playerService.addBet(player._id, bet));
             this.props.navigation.navigate('Matches');
         }
@@ -125,18 +135,6 @@ class BetScreen extends Component {
                     containerStyle={{ height: 100 }}
                 />
                 <Text style={styles.text}>{'Votre pariez sur : ' + buttons[selectedIndex]}</Text>
-                <View style={styles.container2}>
-                    <Text style={styles.text}>Score Domicile :</Text>
-                    <Button title="+" onPress={this.IncrementHomeGoals} />
-                    <Text style={styles.text}>{this.state.homeScore}</Text>
-                    <Button title="-" onPress={this.DecreaseHomeGoals} />
-                </View>
-                <View style={styles.container2}>
-                    <Text style={styles.text}>Score Extérieur :</Text>
-                    <Button title="+" onPress={this.IncrementAwayGoals} />
-                    <Text style={styles.text}>{this.state.awayScore}</Text>
-                    <Button title="-" onPress={this.DecreaseAwayGoals} />
-                </View>
                 <View style={styles.container2}>
                     <Text style={styles.text}>Votre mise :</Text>
                     <Button title="+" onPress={this.IncrementItem} />

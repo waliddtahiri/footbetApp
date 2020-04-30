@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     row: {
-        marginTop: 24,
+        marginTop: 1,
         padding: 30,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -49,30 +49,41 @@ class MatchesScreen extends Component {
     async componentDidMount() {
         this.setState({ loading: true });
         const postsSA = await this.props.competitionService.fetchCompetitionMatchesSA();
-        console.log(postsSA);
+
         const postsLiga = await this.props.competitionService.fetchCompetitionMatchesLiga();
         this.setState({ loading: false, matchsSA: postsSA, matchsLiga: postsLiga });
     }
 
 
     render() {
-
         const player = this.props.player;
 
         const postsSA = [];
         const postsLiga = [];
+        let matchday = 0;
 
         this.state.matchsSA.forEach(match => {
-            postsSA.push({
-                title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
-                info : match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
-            })
+            if (match.matchday > matchday) {
+                matchday = match.matchday;
+            }
         });
+
+        this.state.matchsSA.forEach(match => {
+            if (match.matchday == matchday) {
+                postsSA.push({
+                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
+                })
+            }
+        });
+
         this.state.matchsLiga.forEach(match => {
-            postsLiga.push({
-                title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
-                info : match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
-            })
+            if (match.matchday == matchday) {
+                postsLiga.push({
+                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
+                })
+            }
         });
 
         const data = [{ title: 'Serie A', matchs: postsSA, logo: 'https://upload.wikimedia.org/wikipedia/fr/8/89/SerieALogo.png' },
@@ -85,7 +96,7 @@ class MatchesScreen extends Component {
                     getChildrenName={(node) => 'matchs'}
                     onNodePressed={(node) => {
                         if (node.title !== 'Serie A' && node.title !== 'Liga') {
-                            this.props.navigation.navigate('Modal', { match: node, player: player })
+                            this.props.navigation.navigate('Jouer', { match: node, player: player })
                         }
                     }
                     }

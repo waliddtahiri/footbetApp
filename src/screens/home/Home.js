@@ -1,42 +1,43 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
-import { Table, Row, Rows } from 'react-native-table-component';
-import { BetService } from '../../services/bet.service';
+import { DuelService } from '../../services/duel.service';
+import { PlayerService } from '../../services/player.service';
 
-import { BetRows } from './ShowList';
+import { DuelRows } from './ShowList';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-const betService = new BetService();
+const duelService = new DuelService();
+const playerService = new PlayerService();
 
-class HomeScreen extends Component {
+class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            bets: []
+            duels: []
         }
     }
 
     async componentDidMount() {
-        const bets = [];
-        let pari = undefined;
-        this.props.player.bet.forEach(async (bet) => {
-            pari = await betService.get(bet);
-            if (pari.match.winner === "unknown") {
-                bets.push(pari);
+        const array = [];
+        const duels = await duelService.getDuels();
+        duels.forEach(async (duel) => {
+            let d = await duelService.getDuel(duel._id);
+            let player = await playerService.getById(d.challenged.opponent);
+            if (d.match.winner != "unknown" && this.props.player._id != player._id
+                && d.challenged.status == "Received") {
+                array.push({ duel: d, opponent: player });
             }
             this.setState({
-                bets
+                duels: array
             })
-            console.log(pari);
-        });
+        })
     }
 
     render() {
-        const { bets } = this.state;
+        const { duels } = this.state;
         return (
             <ScrollView style={styles.container}>
-                <BetRows posts={bets} />
+                <DuelRows posts={duels} navigation={this.props.navigation} />
             </ScrollView>
         )
     }
@@ -68,4 +69,4 @@ const mapStateToProps = state => ({
     player: state.auth.player,
 });
 
-export default connect(mapStateToProps)(HomeScreen);
+export default connect(mapStateToProps)(Home);

@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 const betService = new BetService();
 
-class HomeScreen extends Component {
+class BetLost extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,13 +22,12 @@ class HomeScreen extends Component {
         let pari = undefined;
         this.props.player.bet.forEach(async (bet) => {
             pari = await betService.get(bet);
-            if (pari.match.winner === "unknown") {
+            if (pari.match.winner != pari.winner && pari.match.winner != "unknown") {
                 bets.push(pari);
             }
             this.setState({
                 bets
             })
-            console.log(pari);
         });
     }
 
@@ -68,4 +67,4 @@ const mapStateToProps = state => ({
     player: state.auth.player,
 });
 
-export default connect(mapStateToProps)(HomeScreen);
+export default connect(mapStateToProps)(BetLost);

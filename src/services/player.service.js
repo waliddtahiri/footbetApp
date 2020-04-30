@@ -15,6 +15,12 @@ class PlayerService {
         return players;
     }
 
+    async getById(m) {
+        const {data} = await axios.get('http://192.168.0.239:5000/players/player/' + m);
+
+        return data;
+    }
+
     async getOne(m) {
 
         let player = undefined;
