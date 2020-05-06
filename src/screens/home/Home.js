@@ -4,6 +4,7 @@ import { DuelService } from '../../services/duel.service';
 import { PlayerService } from '../../services/player.service';
 
 import { DuelRows } from './ShowList';
+import DuelsList from './DuelsList';
 import { connect } from 'react-redux';
 
 const duelService = new DuelService();
@@ -13,8 +14,25 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            duels: []
+            duels: [],
+            duel: undefined
         }
+        this.updateDuel = this.updateDuel.bind(this);
+        this.setDuel = this.setDuel.bind(this);
+    }
+
+    setDuel(duel) {
+        this.setState({
+            duel
+        })
+    }
+
+    updateDuel(duel) {
+        const filterDuels = this.state.duels.filter(d => d.duel._id !== duel._id);
+        console.log(filterDuels);
+            this.setState({
+                duels: filterDuels
+            })
     }
 
     async componentDidMount() {
@@ -23,7 +41,7 @@ class Home extends Component {
         duels.forEach(async (duel) => {
             let d = await duelService.getDuel(duel._id);
             let player = await playerService.getById(d.challenged.opponent);
-            if (d.match.winner != "unknown" && this.props.player._id != player._id
+            if (d.match.winner == "unknown" && this.props.player._id != player._id
                 && d.challenged.status == "Received") {
                 array.push({ duel: d, opponent: player });
             }
@@ -34,10 +52,10 @@ class Home extends Component {
     }
 
     render() {
-        const { duels } = this.state;
+        const { duels, duel } = this.state;
         return (
             <ScrollView style={styles.container}>
-                <DuelRows posts={duels} navigation={this.props.navigation} />
+                <DuelsList posts={duels} setDuel={this.setDuel} navigation={this.props.navigation} updateDuel={this.updateDuel} />
             </ScrollView>
         )
     }

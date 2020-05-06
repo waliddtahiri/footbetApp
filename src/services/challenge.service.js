@@ -11,7 +11,7 @@ class ChallengeService {
     }
 
     async update(id, challenge) {
-        await axios.put('http://localhost:5000/challenges/update/' + id, challenge)
+        await axios.put('http://192.168.0.239:5000/challenges/update/' + id, challenge)
             .then(res => {
                 console.log(res);
             }).catch(error => console.log(error));

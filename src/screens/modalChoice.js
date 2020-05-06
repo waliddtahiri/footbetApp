@@ -44,7 +44,7 @@ class ModalChoice extends Component {
 
     render() {
 
-        const data = [{ title: 'Parier' }, { title: 'Duel' }];
+        const data = [{ title: 'PARIER    (mode Solo)' }, { title: 'DUEL    (défier un autre joueur)' }];
 
         return (
             <View style={styles.container}>

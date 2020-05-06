@@ -6,10 +6,36 @@ import { Card } from 'react-native-elements';
 export const BetRows = ({ posts }) => {
     const bets = posts.map(post => {
         return (
-            <View key={post._id} style={styles.row}>
-                <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
-                <Text>WINNER PREDICTED : {post.winner}{"\n"}</Text>
-                <Text>BETTING : {post.betting}{"\n"}</Text>
+            <View>
+                {post.match.winner != post.winner ? (
+                    <View key={post._id} style={styles.rowLoser}>
+                        <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
+                        {post.match.winner == "HOME_TEAM" ? (
+                            <Text>RESULT : {post.match.homeTeam} WINS{"\n"}</Text>
+                        ) : (post.match.winner == "AWAY_TEAM" ? (
+                            <Text>RESULT : {post.match.awayTeam} WINS{"\n"}</Text>
+                        ) : (
+                                <Text>RESULT : DRAW {"\n"}</Text>
+                            )
+                            )
+                        }
+                        <Text>BETTING : {post.betting} COINS</Text>
+                    </View>) : (
+                        <View key={post._id} style={styles.rowWinner}>
+                            <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
+                            {post.match.winner == "HOME_TEAM" ? (
+                                <Text>RESULT : {post.match.homeTeam} WINS{"\n"}</Text>
+                            ) : (post.match.winner == "AWAY_TEAM" ? (
+                                <Text>RESULT : {post.match.awayTeam} WINS{"\n"}</Text>
+                            ) : (
+                                    <Text>RESULT : DRAW {"\n"}</Text>
+                                )
+                                )
+                            }
+                            <Text>BETTING : {post.betting} COINS</Text>
+                        </View>
+                    )
+                }
             </View>
         )
     })
@@ -18,16 +44,21 @@ export const BetRows = ({ posts }) => {
     )
 }
 
+
 export const DuelRows = ({ posts, navigation }) => {
+    const updatePost = (duel) => {
+        this.props.updateDuel(duel);
+    }
     const duels = posts.map(post => {
         return (
-                <TouchableOpacity key={post.duel._id} 
-                    onPress={() => navigation.navigate('Challenge', { challenge: post.duel.challenged })}>
-                    <Card>
-                        <Text>MATCH : {post.duel.match.homeTeam} VS {post.duel.match.awayTeam}{"\n"}</Text>
-                        <Text>CHALLENGER : {post.opponent.username.toUpperCase()}{"\n"}</Text>
-                    </Card>
-                </TouchableOpacity>
+            <TouchableOpacity key={post.duel._id}
+                onPress={() => navigation.navigate('Challenge',
+                 { duel: post.duel, challenge: post.duel.challenged, update: updatePost(post.duel) })}>
+                <Card>
+                    <Text>MATCH : {post.duel.match.homeTeam} VS {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>CHALLENGER : {post.opponent.username.toUpperCase()}{"\n"}</Text>
+                </Card>
+            </TouchableOpacity>
         )
     })
     return (
@@ -42,11 +73,15 @@ const styles = StyleSheet.create({
         paddingTop: 40,
         paddingHorizontal: 20
     },
-    row: {
+    rowWinner: {
         marginTop: 1,
         padding: 5,
-        backgroundColor: '#FFFAF0',
-
+        backgroundColor: '#00FF00',
+    },
+    rowLoser: {
+        marginTop: 1,
+        padding: 5,
+        backgroundColor: '#FF0000',
     },
     text: {
         color: '#ffffff',

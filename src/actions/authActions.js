@@ -37,7 +37,33 @@ export const register = ({ username, password }) => dispatch => {
     // request body
     const body = JSON.stringify({ username, password });
 
-    axios.post('http://192.168.0.239:5000/auth', body, config)
+    axios.post('http://192.168.0.239:5000/auth/signup', body, config)
+        .then(res => dispatch({
+            type: REGISTER_SUCCESS,
+            payload: res.data
+        }))
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'));
+            dispatch({
+                type: REGISTER_FAIL
+            });
+        });
+
+}
+
+// login user
+export const login = ({ username, password }) => dispatch => {
+    // headers
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+
+    // request body
+    const body = JSON.stringify({ username, password });
+
+    axios.post('http://192.168.0.239:5000/auth/login', body, config)
         .then(res => dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data

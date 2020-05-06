@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
-    Login, HomeScreen, Home, ChallengeScore, BetWon, BetLost,
+    Login, SignUp, BetsCurrent, Home, ChallengeScore, BetsHistory,
     MatchesScreen, BetScreen, DuelScreen, ModalChoice
 } from './screens';
 import Test from './test';
@@ -37,22 +37,11 @@ const HomeStackScreen = () => {
     );
 }
 
-const MatTab2 = () => {
-    return (
-        <Mat.Navigator>
-            <Mat.Screen name="Victoires" component={Test} />
-            <Mat.Screen name="Defaites" component={Test} />
-            <Mat.Screen name="En Cours" component={Test} />
-        </Mat.Navigator>
-    );
-}
-
 const MatTab1 = () => {
     return (
         <Mat.Navigator>
-            <Mat.Screen name="En cours" component={HomeScreen} />
-            <Mat.Screen name="Gagnés" component={BetWon} />
-            <Mat.Screen name="Perdus" component={BetLost} />
+            <Mat.Screen name="En cours" component={BetsCurrent} />
+            <Mat.Screen name="Historique" component={BetsHistory} />
         </Mat.Navigator>
     );
 }
@@ -60,8 +49,8 @@ const MatTab1 = () => {
 const MatTab = () => {
     return (
         <Mat.Navigator>
-            <Mat.Screen name="Paris solos" component={MatTab1} />
-            <Mat.Screen name="Challenges" component={MatTab2} />
+            <Mat.Screen name="Paris Solo" component={MatTab1} />
+            <Mat.Screen name=" Historique Duels" component={Test} />
         </Mat.Navigator>
     );
 }
@@ -79,6 +68,7 @@ class AllScreens extends Component {
                 {!this.props.isAuthenticated == true ? (
                     <Stack.Navigator screenOptions={{ headerShown: false }}>
                         <Stack.Screen name="Login" component={Login} />
+                        <Stack.Screen name="SignUp" component={SignUp} />
                     </Stack.Navigator>
                 ) : (
                         <Tab.Navigator>

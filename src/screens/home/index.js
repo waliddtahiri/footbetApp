@@ -1,13 +1,11 @@
-import HomeScreen from './HomeScreen';
+import BetsCurrent from './BetsCurrent';
 import Home from './Home';
 import ChallengeScore from './ChallengeScore';
-import BetWon from './BetWon';
-import BetLost from './BetLost';
+import BetsHistory from './BetsHistory';
 
 export {
-    HomeScreen,
+    BetsCurrent,
     Home,
     ChallengeScore,
-    BetWon,
-    BetLost
+    BetsHistory
 };

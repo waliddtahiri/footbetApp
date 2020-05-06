@@ -35,6 +35,10 @@ class ChallengeScore extends Component {
         challengeService
     }
 
+    componentDidMount(){
+        console.log(this.props.route.params);
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -78,6 +82,7 @@ class ChallengeScore extends Component {
 
         await challengeService.update(challenge._id, challenge);
 
+        this.props.route.params.update();
         this.props.navigation.navigate('Home');
     }
 

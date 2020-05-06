@@ -8,8 +8,9 @@ import {
     TouchableOpacity
 } from 'react-native';
 import axios from 'axios';
-import { login } from '../../actions/authActions';
+import { register } from '../../actions/authActions';
 import { clearErrors } from '../../actions/errorActions';
+import AlertPro from "react-native-alert-pro";
 
 import {
     getFromStorage,
@@ -20,28 +21,40 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 
-class Login extends Component {
+class SignUp extends Component {
 
     state = {
         username: '',
         password: '',
         token: '',
         signUpError: '',
-        signInError: '',
         msg: null
     };
 
     static propTypes = {
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
-        login: PropTypes.func.isRequired
+        register: PropTypes.func.isRequired,
+        clearErrors: PropTypes.func.isRequired
+    }
+
+    componentDidUpdate(prevProps) {
+        const { error } = this.props;
+        if (error !== prevProps.error) {
+            // check for register error
+            if (error.id === 'REGISTER_FAIL') {
+                this.setState({ msg: error.msg.msg });
+            } else {
+                this.setState({ msg: null });
+            }
+        }
     }
 
     componentDidMount() {
         const obj = getFromStorage('the_main_app');
         if (obj && obj.token) {
             const { token } = obj;
-            axios.get('http://192.168.0.239:5000/signin/verify?token=' + token)
+            axios.get('http://192.168.0.239:5000/SignUp/verify?token=' + token)
                 .then(res => {
                     if (res.data.success) {
                         this.setState({
@@ -52,59 +65,46 @@ class Login extends Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
-        const { error } = this.props;
-        if (error !== prevProps.error) {
-            // check for login error
-            if (error.id === 'LOGIN_FAIL') {
-                this.setState({ msg: error.msg.msg });
-            } else {
-                this.setState({ msg: null });
-            }
-        }
+    goBack = () => {
+        this.props.navigation.navigate('Login');
     }
 
-    login = () => {
+    signUp = () => {
 
         const username = this.state.username.toLowerCase();
         const password = this.state.password;
 
         // create user object
-        const user = {
+        const newUser = {
             username,
             password
         };
 
-        // attempt to login
-        this.props.login(user);
+        // attempt to register
+        this.props.register(newUser);
     }
 
-    register = () => {
-        this.props.navigation.navigate('SignUp');
-    }
 
     render() {
         return (
-            <View style={styles.container}>
-                <ImageBackground source={{ uri: 'https://free-hd-wallpapers.info/wp-content/uploads/2018/03/football-pitch-wallpaper-football-field-wallpaper-walls-15-with-football-field-wallpaper-walls.jpg' }}
-                    style={styles.backgroundImage}>
-                    <View style={styles.content}>
-                        <Text style={styles.logo}> FootBet </Text>
-                        <View style={styles.inputContainer}>
-                            <TextInput underlineColorAndroid='transparent' style={styles.input}
-                                onChangeText={(username) => this.setState({ username })} value={this.state.username}
-                                placeholder='username' />
-                            <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
-                                onChangeText={(password) => this.setState({ password })} value={this.state.password}
-                                placeholder='password' />
-                            <View style={styles.row}>
-                                <TouchableOpacity onPress={this.register} style={styles.buttonContainer}>
-                                    <Text style={styles.buttonText}>REGISTER</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
-                                    <Text style={styles.buttonText}>LOGIN</Text>
-                                </TouchableOpacity>
-                            </View>
+            <ImageBackground source={{ uri: 'https://free-hd-wallpapers.info/wp-content/uploads/2018/03/football-pitch-wallpaper-football-field-wallpaper-walls-15-with-football-field-wallpaper-walls.jpg' }}
+                style={styles.backgroundImage}>
+                <View style={styles.content}>
+                    <Text style={styles.logo}> FootBet </Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput underlineColorAndroid='transparent' style={styles.input}
+                            onChangeText={(username) => this.setState({ username })} value={this.state.username}
+                            placeholder='username' />
+                        <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
+                            onChangeText={(password) => this.setState({ password })} value={this.state.password}
+                            placeholder='password' />
+                        <View style={styles.row}>
+                            <TouchableOpacity onPress={this.goBack} style={styles.buttonContainer}>
+                                <Text style={styles.buttonText}>GO BACK</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.signUp} style={styles.buttonContainer}>
+                                <Text style={styles.buttonText}>SIGN UP</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     {this.state.msg ? (
@@ -112,8 +112,8 @@ class Login extends Component {
                             <Text style={styles.buttonText}>{this.state.msg}</Text>
                         </View>
                     ) : null}
-                </ImageBackground>
-            </View>
+                </View>
+            </ImageBackground>
         )
     }
 };
@@ -131,10 +131,6 @@ const styles = StyleSheet.create({
     content: {
         alignItems: 'center',
     },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
     logo: {
         color: 'white',
         fontSize: 40,
@@ -147,7 +143,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         margin: 20,
-        marginBottom: 20,
+        marginBottom: 0,
         padding: 20,
         paddingBottom: 10,
         alignSelf: 'stretch',
@@ -162,6 +158,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#fff',
         backgroundColor: 'rgba(255,0,0,0.2)',
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
     input: {
         fontSize: 16,
@@ -191,5 +191,4 @@ const mapStateToProps = state => ({
     error: state.error
 });
 
-export default connect(mapStateToProps, { login })(Login);
-
+export default connect(mapStateToProps, { register, clearErrors })(SignUp);

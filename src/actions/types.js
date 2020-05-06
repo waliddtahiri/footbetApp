@@ -8,3 +8,6 @@ export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
+export const GET_BETS = "GET_BETS";
+export const ADD_BET = "ADD_BET";
+export const DELETE_BET = "DELETE_BET";

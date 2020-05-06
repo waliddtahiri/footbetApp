@@ -23,6 +23,7 @@
     "react-devtools": "^3.6.3",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-alert-pro": "^1.1.2",
     "react-native-button-group": "^1.0.0",
     "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "~1.5.0",
