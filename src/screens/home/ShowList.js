@@ -70,21 +70,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#384259',
-        paddingTop: 40,
-        paddingHorizontal: 20
+        paddingTop: 40
     },
     rowWinner: {
         marginTop: 1,
         padding: 5,
-        backgroundColor: '#00FF00',
+        backgroundColor: '#00FF00'
     },
     rowLoser: {
         marginTop: 1,
         padding: 5,
-        backgroundColor: '#FF0000',
-    },
-    text: {
-        color: '#ffffff',
-        fontSize: 15
+        backgroundColor: '#FF0000'
     }
 });

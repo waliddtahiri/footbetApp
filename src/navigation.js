@@ -50,7 +50,7 @@ const MatTab = () => {
     return (
         <Mat.Navigator>
             <Mat.Screen name="Paris Solo" component={MatTab1} />
-            <Mat.Screen name=" Historique Duels" component={Test} />
+            <Mat.Screen name="Historique Duels" component={Test} />
         </Mat.Navigator>
     );
 }
@@ -64,21 +64,18 @@ class AllScreens extends Component {
 
     render() {
         return (
-            <NavigationContainer>
-                {!this.props.isAuthenticated == true ? (
-                    <Stack.Navigator screenOptions={{ headerShown: false }}>
-                        <Stack.Screen name="Login" component={Login} />
-                        <Stack.Screen name="SignUp" component={SignUp} />
-                    </Stack.Navigator>
-                ) : (
-                        <Tab.Navigator>
-                            <Tab.Screen name="Home" component={HomeStackScreen} />
-                            <Tab.Screen name="Matches" component={MatchesStackScreen} />
-                            <Tab.Screen name="History" component={MatTab} />
-                        </Tab.Navigator >
-                    )
-                }
-            </NavigationContainer >
+            !this.props.isAuthenticated == true ? (
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="SignUp" component={SignUp} />
+                </Stack.Navigator>
+            ) : (
+                    <Tab.Navigator>
+                        <Tab.Screen name="Home" component={HomeStackScreen} />
+                        <Tab.Screen name="Matches" component={MatchesStackScreen} />
+                        <Tab.Screen name="History" component={MatTab} />
+                    </Tab.Navigator >
+                )
         )
     }
 

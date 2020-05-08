@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
-import { Table, Row, Rows } from 'react-native-table-component';
 import { BetService } from '../../services/bet.service';
 
 import { BetRows } from './ShowList';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 const betService = new BetService();
 

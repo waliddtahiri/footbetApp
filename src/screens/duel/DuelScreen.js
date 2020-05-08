@@ -18,6 +18,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         color: '#ffffff',
     },
+    errorsContainer: {
+        margin: 20,
+        padding: 20,
+        alignSelf: 'stretch',
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor: 'rgba(255,0,0,0.2)',
+    },
     text: {
         color: '#ffffff',
         fontSize: 15,
@@ -47,7 +55,8 @@ class DuelScreen extends Component {
             player2: null,
             duel: null,
             numero: null,
-            show: true
+            show: true,
+            errors: []
         }
         this.updateIndex = this.updateIndex.bind(this)
     }
@@ -108,21 +117,43 @@ class DuelScreen extends Component {
         let homeScore = this.state.homeScore;
         let awayScore = this.state.awayScore;
         let betting = this.state.betting;
+        let errors = [];
 
         let challenger = {
             opponent: player2, match: match.info, homeScore,
             awayScore, betting, status: "Sent"
         };
 
-        console.log(player2);
-        //console.log(duelChallenger);
-        //console.log(match.info);
+        if (this.state.opponent == null) {
+            let error = "- Veuillez sélectionner un adversaire"
+            errors.push(error);
+            this.setState({
+                errors
+            })
+        }
 
-        this.props.playerService.addDuel(player._id, challenger);
+        if (betting == 0) {
+            let error = "- Veuillez sélectionner une somme à parier"
+            errors.push(error);
+            this.setState({
+                errors
+            })
+        }
 
-        //this.props.playerService.addDuelPlayer2(player2._id, duel);
+        if (betting > player.coins) {
+            let error = "- Vous n'avez pas assez de COINS"
+            errors.push(error);
+            this.setState({
+                errors
+            })
+        }
 
-        this.props.navigation.navigate('Matches');
+        if (this.state.opponent !== null && this.state.betting > 0 && this.state.betting <= player.coins) {
+            player.coins = player.coins - this.state.betting;
+            this.props.playerService.addDuel(player._id, challenger);
+            this.props.navigation.navigate('Matches');
+        }
+
     }
 
 
@@ -133,6 +164,11 @@ class DuelScreen extends Component {
         const { awayTeam } = this.props.route.params.match;
         const buttons = [homeTeam, 'Match Nul', awayTeam];
         const { selectedIndex } = this.state;
+
+        const { errors } = this.state;
+        const errorsList = errors.map((error, i) => {
+            return (<Text key={i} style={styles.buttonText}>{error}</Text>)
+        })
 
         const onChangeHandler = async (value) => {
             this.setState({
@@ -146,6 +182,7 @@ class DuelScreen extends Component {
 
         return (
             <View style={styles.container}>
+                <Text> COINS : {player.coins}</Text>
                 <Dropdown
                     label='Opponent'
                     data={this.state.players}
@@ -172,6 +209,11 @@ class DuelScreen extends Component {
                 <View style={styles.container2}>
                     <Button title="Valider Duel" onPress={this.ValiderDuel} />
                 </View>
+                {errors.length !== 0 ? (
+                    <View style={styles.errorsContainer}>
+                        {errorsList}
+                    </View>
+                ) : null}
             </View>
         );
     }

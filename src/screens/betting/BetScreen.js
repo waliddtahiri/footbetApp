@@ -17,6 +17,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         color: '#ffffff',
     },
+    errorsContainer: {
+        margin: 20,
+        padding: 20,
+        alignSelf: 'stretch',
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor: 'rgba(255,0,0,0.2)',
+    },
     text: {
         color: '#ffffff',
         fontSize: 15,
@@ -42,6 +50,7 @@ class BetScreen extends Component {
             homeScore: 0,
             awayScore: 0,
             betting: 0,
+            errors: [],
             show: true
         }
         this.updateIndex = this.updateIndex.bind(this)
@@ -97,22 +106,41 @@ class BetScreen extends Component {
         let awayScore = this.state.awayScore;
         let betting = this.state.betting;
         let winner = ' ';
+        let errors = [];
+
+        if (betting == 0) {
+            let error = "- Veuillez sélectionner une somme à parier"
+            errors.push(error);
+            this.setState({
+                errors
+            })
+        }
+
+        if (betting > player.coins) {
+            let error = "- Vous n'avez pas assez de COINS"
+            errors.push(error);
+            this.setState({
+                errors
+            })
+        }
 
         if (this.state.selectedIndex >= 0 && betting !== 0 && betting <= player.coins) {
 
-            if(selectedIndex === 0){
+            if (selectedIndex === 0) {
                 winner = "HOME_TEAM"
             }
-            else if(selectedIndex === 1){
+            else if (selectedIndex === 1) {
                 winner = "DRAW"
             }
-            else if(selectedIndex === 2){
+            else if (selectedIndex === 2) {
                 winner = "AWAY_TEAM"
             }
 
+            player.coins = player.coins - betting;
+
             let bet = { match: match.info, homeScore, awayScore, winner, betting };
             console.log(bet);
-            console.log(this.props.playerService.addBet(player._id, bet));
+            this.props.playerService.addBet(player._id, bet);
             this.props.navigation.navigate('Matches');
         }
     }
@@ -124,6 +152,10 @@ class BetScreen extends Component {
         const { awayTeam } = this.props.route.params.match;
         const buttons = [homeTeam, 'Match Nul', awayTeam];
         const { selectedIndex } = this.state;
+        const { errors } = this.state;
+        const errorsList = errors.map((error, i) => {
+            return (<Text key={i} style={styles.buttonText}>{error}</Text>)
+        })
 
         return (
             <View style={styles.container}>
@@ -144,6 +176,11 @@ class BetScreen extends Component {
                 <View style={styles.container2}>
                     <Button title="Valider Pari" onPress={this.ValiderPanier} />
                 </View>
+                {errors.length !== 0 ? (
+                    <View style={styles.errorsContainer}>
+                        {errorsList}
+                    </View>
+                ) : null}
             </View>
         );
     }

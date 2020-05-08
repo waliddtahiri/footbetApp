@@ -34,10 +34,10 @@ class ModalChoice extends Component {
         const player = this.props.route.params.player;
         const match = this.props.route.params.match;
 
-        if (item.title == "Parier") {
+        if (item.title == "PARIER    (mode Solo)") {
             this.props.navigation.navigate('Betting', { match: match, player: player })
         }
-        if (item.title == "Duel") {
+        if (item.title == "DUEL    (défier un autre joueur)") {
             this.props.navigation.navigate('Duel', { match: match, player: player })
         }
     }
