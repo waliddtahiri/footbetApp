@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { PlayerService } from '../../services/player.service';
 import { DuelService } from '../../services/duel.service';
+import { FancyAlert } from 'react-native-expo-fancy-alerts';
 
 import { Dropdown } from 'react-native-material-dropdown';
 
@@ -31,6 +32,23 @@ const styles = StyleSheet.create({
         fontSize: 15,
         textAlign: 'center',
         lineHeight: 70,
+    },
+    btn: {
+        borderRadius: 32,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 8,
+        paddingVertical: 8,
+        alignSelf: 'stretch',
+        backgroundColor: '#4CB748',
+        marginTop: 16,
+        minWidth: '50%',
+        paddingHorizontal: 16,
+    },
+    btnText: {
+        color: '#FFFFFF',
     }
 });
 
@@ -55,7 +73,7 @@ class DuelScreen extends Component {
             player2: null,
             duel: null,
             numero: null,
-            show: true,
+            visible: false,
             errors: []
         }
         this.updateIndex = this.updateIndex.bind(this)
@@ -109,6 +127,15 @@ class DuelScreen extends Component {
         }
     }
 
+    onPress = () => {
+        this.setState({
+            visible: false
+        })
+        this.props.navigation.goBack();
+        this.props.navigation.goBack();
+        this.props.navigation.navigate('Home');
+    }
+
     ValiderDuel = async () => {
         const player = this.props.route.params.player;
         const player2 = this.state.player2;
@@ -150,8 +177,12 @@ class DuelScreen extends Component {
 
         if (this.state.opponent !== null && this.state.betting > 0 && this.state.betting <= player.coins) {
             player.coins = player.coins - this.state.betting;
+            this.props.playerService.update(player._id, player);
             this.props.playerService.addDuel(player._id, challenger);
-            this.props.navigation.navigate('Matches');
+            
+            this.setState({
+                visible: true
+            })
         }
 
     }
@@ -214,6 +245,24 @@ class DuelScreen extends Component {
                         {errorsList}
                     </View>
                 ) : null}
+                <FancyAlert
+                    visible={this.state.visible}
+                    icon={<View style={{
+                        flex: 1,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'green',
+                        borderRadius: '50%',
+                        width: '100%',
+                    }}><Text>🤓</Text></View>}
+                    style={{ backgroundColor: 'white' }}
+                >
+                    <Text style={{ marginTop: -16, marginBottom: 32 }}>Vous avez provoqué {this.state.opponent} en Duel, votre demande lui sera communiqué </Text>
+                    <TouchableOpacity style={styles.btn} onPress={() => this.onPress()}>
+                        <Text style={styles.btnText}>OK</Text>
+                    </TouchableOpacity>
+                </FancyAlert>
             </View>
         );
     }

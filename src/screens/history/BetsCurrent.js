@@ -3,7 +3,9 @@ import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
 import { Table, Row, Rows } from 'react-native-table-component';
 import { BetService } from '../../services/bet.service';
 
-import { BetRows } from './ShowList';
+import { BetCurrentRows } from '../home/ShowList';
+
+import { getBets } from '../../actions/betActions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -12,30 +14,17 @@ const betService = new BetService();
 class BetsCurrent extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            bets: []
-        }
     }
 
     async componentDidMount() {
-        const bets = [];
-        let pari = undefined;
-        this.props.player.bet.forEach(async (bet) => {
-            pari = await betService.get(bet);
-            if (pari.match.winner === "unknown") {
-                bets.push(pari);
-            }
-            this.setState({
-                bets
-            })
-        });
+        this.props.getBets(this.props.player._id);
     }
 
     render() {
-        const { bets } = this.state;
+        const { bets } = this.props.bet;
         return (
             <ScrollView style={styles.container}>
-                <BetRows posts={bets} />
+                <BetCurrentRows posts={bets} />
             </ScrollView>
         )
     }
@@ -63,8 +52,13 @@ const styles = StyleSheet.create({
 
 });
 
+BetsCurrent.propTypes = {
+    getBets: PropTypes.func.isRequired
+}
+
 const mapStateToProps = state => ({
     player: state.auth.player,
+    bet: state.bet
 });
 
-export default connect(mapStateToProps)(BetsCurrent);
+export default connect(mapStateToProps, { getBets })(BetsCurrent);

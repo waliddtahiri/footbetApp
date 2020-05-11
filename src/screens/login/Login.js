@@ -97,15 +97,15 @@ class Login extends Component {
                             <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
                                 onChangeText={(password) => this.setState({ password })} value={this.state.password}
                                 placeholder='password' />
-                            <View style={styles.row}>
-                                <TouchableOpacity onPress={this.register} style={styles.buttonContainer}>
-                                    <Text style={styles.buttonText}>REGISTER</Text>
-                                </TouchableOpacity>
+                            <View>
                                 <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
                                     <Text style={styles.buttonText}>LOGIN</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
+                        <TouchableOpacity onPress={this.register} style={styles.buttonContainer}>
+                            <Text style={styles.buttonText}>REGISTER</Text>
+                        </TouchableOpacity>
                     </View>
                     {this.state.msg ? (
                         <View style={styles.errorsContainer}>
@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignSelf: 'stretch',
-        margin: 10,
-        padding: 10,
+        margin: 20,
+        padding: 20,
         backgroundColor: 'blue',
         borderWidth: 1,
         borderColor: '#fff',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
 import { BetService } from '../../services/bet.service';
 
-import { BetRows } from './ShowList';
+import { BetRows } from '../home/ShowList';
 import { connect } from 'react-redux';
 
 const betService = new BetService();
@@ -20,7 +20,9 @@ class BetsHistory extends Component {
         let pari = undefined;
         this.props.player.bet.forEach(async (bet) => {
             pari = await betService.get(bet);
-            bets.push(pari);
+            if (pari.match.winner != "unknown") {
+                bets.push(pari);
+            }
             this.setState({
                 bets
             })

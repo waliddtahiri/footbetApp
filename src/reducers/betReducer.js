@@ -1,14 +1,15 @@
 import { GET_BETS, ADD_BET, DELETE_BET } from '../actions/types';
 
 const initialState = {
-    items: []
+    bets: []
 }
 
 export default function(state = initialState, action) {
     switch (action.type) {
         case GET_BETS:
             return {
-                ...state
+                ...state,
+                bets: action.payload
             };
         case DELETE_BET:
             return {
@@ -18,7 +19,7 @@ export default function(state = initialState, action) {
         case ADD_BET:
             return{
                 ...state,
-                items: [action.payload, ...state.items]
+                bets: [action.payload, ...state.bets]
             };
         default:
             return state;

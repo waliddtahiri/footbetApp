@@ -3,9 +3,13 @@ import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
 import { DuelService } from '../../services/duel.service';
 import { PlayerService } from '../../services/player.service';
 
-import { DuelRows } from './ShowList';
+import { BetCurrentRows } from './ShowList';
 import DuelsList from './DuelsList';
+
+import { getBets } from '../../actions/betActions';
 import { connect } from 'react-redux';
+
+import PropTypes from 'prop-types';
 
 const duelService = new DuelService();
 const playerService = new PlayerService();
@@ -30,9 +34,9 @@ class Home extends Component {
     updateDuel(duel) {
         const filterDuels = this.state.duels.filter(d => d.duel._id !== duel._id);
         console.log(filterDuels);
-            this.setState({
-                duels: filterDuels
-            })
+        this.setState({
+            duels: filterDuels
+        })
     }
 
     async componentDidMount() {
@@ -52,10 +56,15 @@ class Home extends Component {
     }
 
     render() {
-        const { duels, duel } = this.state;
+        const { duels} = this.state;
         return (
             <ScrollView style={styles.container}>
-                <DuelsList posts={duels} setDuel={this.setDuel} navigation={this.props.navigation} updateDuel={this.updateDuel} />
+                <Text style={styles.title}>Bienvenue {this.props.player.username}, {"\n"}</Text>
+                {this.state.duels.length !== 0 ? (
+                    <DuelsList posts={duels} setDuel={this.setDuel} navigation={this.props.navigation} updateDuel={this.updateDuel} />
+                ) : (
+                        <Text style={styles.text}>Pas de notifications</Text>
+                    )}
             </ScrollView>
         )
     }
@@ -76,15 +85,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#ff1493',
         alignItems: 'center'
     },
+    title: {
+        color: '#ffffff',
+        fontSize: 40
+    },
     text: {
         color: '#ffffff',
-        fontSize: 15
+        fontSize: 25
     }
 
 });
 
+Home.propTypes = {
+    getBets: PropTypes.func.isRequired
+}
+
 const mapStateToProps = state => ({
     player: state.auth.player,
+    bet: state.bet
 });
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, { getBets })(Home);

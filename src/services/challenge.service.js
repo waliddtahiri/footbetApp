@@ -17,6 +17,13 @@ class ChallengeService {
             }).catch(error => console.log(error));
     }
 
+    async decline(id, challenge) {
+        await axios.put('http://192.168.0.239:5000/challenges/decline/' + id, challenge)
+            .then(res => {
+                console.log(res);
+            }).catch(error => console.log(error));
+    }
+
 }
 
 export {

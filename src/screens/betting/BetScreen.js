@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
 import { PlayerService } from '../../services/player.service';
 import { BetService } from '../../services/bet.service';
+import { FancyAlert } from 'react-native-expo-fancy-alerts';
+
+import { connect } from 'react-redux';
+import { addBet } from '../../actions/betActions'
 
 const styles = StyleSheet.create({
     container: {
@@ -30,6 +34,23 @@ const styles = StyleSheet.create({
         fontSize: 15,
         textAlign: 'center',
         lineHeight: 70,
+    },
+    btn: {
+        borderRadius: 32,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 8,
+        paddingVertical: 8,
+        alignSelf: 'stretch',
+        backgroundColor: '#4CB748',
+        marginTop: 16,
+        minWidth: '50%',
+        paddingHorizontal: 16,
+    },
+    btnText: {
+        color: '#FFFFFF',
     }
 });
 
@@ -51,7 +72,7 @@ class BetScreen extends Component {
             awayScore: 0,
             betting: 0,
             errors: [],
-            show: true
+            visible: false
         }
         this.updateIndex = this.updateIndex.bind(this)
     }
@@ -92,6 +113,15 @@ class BetScreen extends Component {
         if (this.state.awayScore > 0) {
             this.setState({ awayScore: this.state.awayScore - 1 });
         }
+    }
+
+    onPress = () => {
+        this.setState({
+            visible: false
+        })
+        this.props.navigation.goBack();
+        this.props.navigation.goBack();
+        this.props.navigation.navigate('Home');
     }
 
     ValiderPanier = async () => {
@@ -141,7 +171,12 @@ class BetScreen extends Component {
             let bet = { match: match.info, homeScore, awayScore, winner, betting };
             console.log(bet);
             this.props.playerService.addBet(player._id, bet);
-            this.props.navigation.navigate('Matches');
+
+            this.props.addBet(bet);
+
+            this.setState({
+                visible: true
+            })
         }
     }
 
@@ -181,9 +216,31 @@ class BetScreen extends Component {
                         {errorsList}
                     </View>
                 ) : null}
+                <FancyAlert
+                    visible={this.state.visible}
+                    icon={<View style={{
+                        flex: 1,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'green',
+                        borderRadius: '50%',
+                        width: '100%',
+                    }}><Text>🤓</Text></View>}
+                    style={{ backgroundColor: 'white' }}
+                >
+                    <Text style={{ marginTop: -16, marginBottom: 32 }}>Votre pari a été validé, vous pouvez consulter la liste de vos paris actifs dans l'onglet 'Historique/Paris solo'</Text>
+                    <TouchableOpacity style={styles.btn} onPress={() => this.onPress()}>
+                        <Text style={styles.btnText}>OK</Text>
+                    </TouchableOpacity>
+                </FancyAlert>
             </View>
         );
     }
 }
 
-export default BetScreen;
+const mapStateToProps = state => ({
+    bets: state.bet.bets
+})
+
+export default connect(mapStateToProps, { addBet })(BetScreen);

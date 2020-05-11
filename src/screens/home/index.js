@@ -1,7 +1,7 @@
-import BetsCurrent from './BetsCurrent';
+import BetsCurrent from '../history/BetsCurrent';
 import Home from './Home';
 import ChallengeScore from './ChallengeScore';
-import BetsHistory from './BetsHistory';
+import BetsHistory from '../history/BetsHistory';
 
 export {
     BetsCurrent,

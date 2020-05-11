@@ -33,6 +33,12 @@ class PlayerService {
         return player;
     }
 
+    async update(id, player) {
+        await axios.put('http://192.168.0.239:5000/players/update/' + id, player)
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err));
+    }
+
     async addBet(player, bet) {
         await axios.post('http://192.168.0.239:5000/players/addBet/' + player, bet)
             .then(res => console.log(res.data))

@@ -3,6 +3,23 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Card } from 'react-native-elements';
 
+
+export const BetCurrentRows = ({ posts }) => {
+    const bets = posts.map(post => {
+        return (
+            <View>
+                <View key={post._id} style={styles.rowNormal}>
+                    <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
+                    <Text>BETTING : {post.betting} COINS</Text>
+                </View>
+            </View>
+        )
+    })
+    return (
+        <View>{bets}</View>
+    )
+}
+
 export const BetRows = ({ posts }) => {
     const bets = posts.map(post => {
         return (
@@ -53,10 +70,11 @@ export const DuelRows = ({ posts, navigation }) => {
         return (
             <TouchableOpacity key={post.duel._id}
                 onPress={() => navigation.navigate('Challenge',
-                 { duel: post.duel, challenge: post.duel.challenged, update: updatePost(post.duel) })}>
+                    { duel: post.duel, challenge: post.duel.challenged, update: updatePost(post.duel) })}>
                 <Card>
                     <Text>MATCH : {post.duel.match.homeTeam} VS {post.duel.match.awayTeam}{"\n"}</Text>
                     <Text>CHALLENGER : {post.opponent.username.toUpperCase()}{"\n"}</Text>
+                    <Text>BETTING : {post.betting}</Text>
                 </Card>
             </TouchableOpacity>
         )
@@ -81,5 +99,10 @@ const styles = StyleSheet.create({
         marginTop: 1,
         padding: 5,
         backgroundColor: '#FF0000'
+    },
+    rowNormal: {
+        marginTop: 1,
+        padding: 5,
+        backgroundColor: '#FFFFFF'
     }
 });
