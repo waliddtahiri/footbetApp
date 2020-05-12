@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignSelf: 'stretch',
-        margin: 20,
+        margin: 10,
         padding: 20,
         backgroundColor: 'blue',
         borderWidth: 1,

@@ -8,6 +8,8 @@ import {
 } from './screens';
 import Test from './test';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { Button } from 'react-native';
+import { logout } from './actions/authActions';
 
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -28,10 +30,18 @@ const MatchesStackScreen = () => {
     );
 }
 
-const HomeStackScreen = () => {
+const HomeStackScreen = (props) => {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Home" component={Home}
+                options={{
+                    headerRight: () => (
+                        <Button
+                            onPress={() => props.logout()}
+                            title="Logout"
+                        />
+                    )
+                }} />
             <Stack.Screen name="Challenge" component={ChallengeScore} />
         </Stack.Navigator>
     );
@@ -57,10 +67,22 @@ const MatTab = () => {
 
 class AllScreens extends Component {
 
+    constructor(props) {
+        super(props);
+        this.deconnexion = this.deconnexion.bind(this);
+    }
+
     static propTypes = {
         isAuthenticated: PropTypes.bool,
+        logout: PropTypes.func.isRequired,
         error: PropTypes.object.isRequired
     }
+
+    deconnexion() {
+        console.log(this.props);
+        this.props.logout();
+    }
+    
 
     render() {
         return (
@@ -71,7 +93,7 @@ class AllScreens extends Component {
                 </Stack.Navigator>
             ) : (
                     <Tab.Navigator>
-                        <Tab.Screen name="Home" component={HomeStackScreen} />
+                        <Tab.Screen name="Home" component={props => <HomeStackScreen {...props} logout={this.deconnexion}/>} />
                         <Tab.Screen name="Matches" component={MatchesStackScreen} />
                         <Tab.Screen name="History" component={MatTab} />
                     </Tab.Navigator >
@@ -86,4 +108,4 @@ const mapStateToProps = state => ({
     error: state.error
 });
 
-export default connect(mapStateToProps)(AllScreens);
+export default connect(mapStateToProps, { logout })(AllScreens);
