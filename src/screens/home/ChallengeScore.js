@@ -5,6 +5,8 @@ import { ChallengeService } from '../../services/challenge.service';
 
 import { FancyAlert } from 'react-native-expo-fancy-alerts';
 
+import { connect } from 'react-redux';
+
 
 const styles = StyleSheet.create({
     container: {
@@ -123,28 +125,28 @@ class ChallengeScore extends Component {
         this.props.navigation.navigate('Home');
     }
 
-    ValiderChallenge = async () => {
+    ValiderChallenge = () => {
         let homeScore = this.state.homeScore;
         let awayScore = this.state.awayScore;
         const challenge = this.props.route.params.challenge;
-        const player = this.props.route.params.player;
+        const player = this.props.player;
 
         player.coins = player.coins - challenge.betting;
 
         challenge.homeScore = homeScore;
         challenge.awayScore = awayScore;
 
-        await playerService.update(player._id, player);
-        await challengeService.update(challenge._id, challenge);
+        playerService.update(player._id, player);
+        challengeService.update(challenge._id, challenge);
         this.setState({
             visible: true
         })     
     }
 
-    DeclineChallenge = async() => {
+    DeclineChallenge = () => {
         const challenge = this.props.route.params.challenge;
 
-        await challengeService.decline(challenge._id, challenge);
+        challengeService.decline(challenge._id, challenge);
         this.setState({
             decline: true
         })     
@@ -213,4 +215,8 @@ class ChallengeScore extends Component {
     }
 }
 
-export default ChallengeScore;
+const mapStateToProps = state => ({
+    player: state.auth.player
+});
+
+export default connect(mapStateToProps)(ChallengeScore);
