@@ -1,32 +1,34 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
-import { BetRows } from '../home/ShowList';
+import { DuelRowsHistory } from '../home/ShowList';
 
-import { getBetsHistory } from '../../actions/betActions';
+import { getDuelsHistory } from '../../actions/duelActions';
 import { connect } from 'react-redux';
+
+import axios from 'axios'
 
 import PropTypes from 'prop-types';
 
-class BetsHistory extends Component {
+
+class DuelsHistory extends Component {
     constructor(props) {
         super(props);
     }
 
     async componentDidMount() {
-        this.props.getBetsHistory(this.props.player._id);
+        this.props.getDuelsHistory(this.props.player.username);
     }
 
     render() {
-        const { betsHistory } = this.props.bet;
-        console.log(betsHistory);
+        const { duels } = this.props.duel;
         return (
-            betsHistory.length > 0 ?
+            duels.length > 0 ?
                 (<ScrollView style={styles.container}>
-                    <BetRows posts={betsHistory} />
+                    <DuelRowsHistory player={this.props.player} posts={duels} />
                  </ScrollView>) : (
                     <View style={styles.textContainer}>
-                        <Text style={styles.text}>Aucun pari à afficher</Text>
+                        <Text style={styles.text}>Aucun duel à afficher</Text>
                     </View>
                 )
         )
@@ -49,8 +51,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     text: {
-        color: '#ffffff',
-        fontSize: 15
+        color: '#ffffff'
     },
     textContainer: {
         flex: 1,
@@ -60,10 +61,9 @@ const styles = StyleSheet.create({
     }
 });
 
-
 const mapStateToProps = state => ({
     player: state.auth.player,
-    bet: state.bet
+    duel: state.duel
 });
 
-export default connect(mapStateToProps, { getBetsHistory })(BetsHistory);
+export default connect(mapStateToProps, { getDuelsHistory })(DuelsHistory);

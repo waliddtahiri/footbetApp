@@ -220,13 +220,13 @@ class DuelScreen extends Component {
                     onChangeText={value => onChangeHandler(value)}
                 />
                 <View style={styles.container2}>
-                    <Text style={styles.text}>Score Domicile :</Text>
+                    <Text style={styles.text}>{homeTeam} :</Text>
                     <Button title="+" onPress={this.IncrementHomeGoals} />
                     <Text style={styles.text}>{this.state.homeScore}</Text>
                     <Button title="-" onPress={this.DecreaseHomeGoals} />
                 </View>
                 <View style={styles.container2}>
-                    <Text style={styles.text}>Score Extérieur :</Text>
+                    <Text style={styles.text}>{awayTeam} :</Text>
                     <Button title="+" onPress={this.IncrementAwayGoals} />
                     <Text style={styles.text}>{this.state.awayScore}</Text>
                     <Button title="-" onPress={this.DecreaseAwayGoals} />

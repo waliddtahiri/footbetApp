@@ -3,13 +3,10 @@ import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
 import { DuelService } from '../../services/duel.service';
 import { PlayerService } from '../../services/player.service';
 
-import { BetCurrentRows } from './ShowList';
 import DuelsList from './DuelsList';
 
 import { getBets } from '../../actions/betActions';
 import { connect } from 'react-redux';
-
-import PropTypes from 'prop-types';
 
 const duelService = new DuelService();
 const playerService = new PlayerService();
@@ -33,7 +30,6 @@ class Home extends Component {
 
     updateDuel(duel) {
         const filterDuels = this.state.duels.filter(d => d.duel._id !== duel._id);
-        console.log(filterDuels);
         this.setState({
             duels: filterDuels
         })
@@ -44,10 +40,11 @@ class Home extends Component {
         const duels = await duelService.getDuels();
         duels.forEach(async (duel) => {
             let d = await duelService.getDuel(duel._id);
-            let player = await playerService.getById(d.challenged.opponent);
-            if (d.match.winner == "unknown" && this.props.player._id != player._id
+            let player = await playerService.getById(d.challenger.opponent);
+            let opponent = await playerService.getById(d.challenged.opponent);
+            if (d.match.winner == "unknown" && this.props.player.username == player.username
                 && d.challenged.status == "Received") {
-                array.push({ duel: d, opponent: player });
+                array.push({ duel: d, opponent });
             }
             this.setState({
                 duels: array
@@ -56,14 +53,16 @@ class Home extends Component {
     }
 
     render() {
-        const { duels} = this.state;
+        const { duels } = this.state;
         return (
             <ScrollView style={styles.container}>
                 <Text style={styles.title}>Bienvenue {this.props.player.username}, {"\n"}</Text>
                 {this.state.duels.length !== 0 ? (
                     <DuelsList posts={duels} setDuel={this.setDuel} navigation={this.props.navigation} updateDuel={this.updateDuel} />
                 ) : (
-                        <Text style={styles.text}>Pas de notifications</Text>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.text}>Aucune notification</Text>
+                        </View>
                     )}
             </ScrollView>
         )
@@ -90,15 +89,16 @@ const styles = StyleSheet.create({
         fontSize: 40
     },
     text: {
-        color: '#ffffff',
-        fontSize: 25
+        color: '#ffffff'
+    },
+    textContainer: {
+        flex: 1,
+        backgroundColor: '#384259',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 120
     }
-
 });
-
-Home.propTypes = {
-    getBets: PropTypes.func.isRequired
-}
 
 const mapStateToProps = state => ({
     player: state.auth.player,

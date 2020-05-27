@@ -29,6 +29,22 @@ class CompetitionService {
 
         return data;
     }
+
+    async fetchCompetitionMatchesPL() {
+        const id = await this.getId(2);
+
+        const { data } = await axios.get(`http://192.168.0.239:5000/competitions/${id}`)
+
+        return data;
+    }
+
+    async fetchCompetitionMatchesBL() {
+        const id = await this.getId(3);
+
+        const { data } = await axios.get(`http://192.168.0.239:5000/competitions/${id}`)
+
+        return data;
+    }
 }
 
 export {

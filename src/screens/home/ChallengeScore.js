@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         color: '#ffffff',
+        marginTop: 30
     },
     text: {
         color: '#ffffff',
@@ -70,7 +71,7 @@ class ChallengeScore extends Component {
         challengeService
     }
 
-    componentDidMount(){
+    componentDidMount() {
         console.log(this.props.route.params);
     }
 
@@ -80,13 +81,14 @@ class ChallengeScore extends Component {
             homeScore: 0,
             awayScore: 0,
             visible: false,
-            decline: false
+            decline: false,
+            noCoins: false
         }
-        this.updateIndex = this.updateIndex.bind(this)
+        this.updateIndex = this.updateIndex.bind(this);
     }
 
     updateIndex(selectedIndex) {
-        this.setState({ selectedIndex })
+        this.setState({ selectedIndex });
     }
 
     IncrementHomeGoals = () => {
@@ -125,22 +127,34 @@ class ChallengeScore extends Component {
         this.props.navigation.navigate('Home');
     }
 
-    ValiderChallenge = () => {
+    ValiderChallenge = async () => {
         let homeScore = this.state.homeScore;
         let awayScore = this.state.awayScore;
         const challenge = this.props.route.params.challenge;
         const player = this.props.player;
 
-        player.coins = player.coins - challenge.betting;
+        if (player.coins >= challenge.betting) {
+            player.coins = player.coins - challenge.betting;
 
-        challenge.homeScore = homeScore;
-        challenge.awayScore = awayScore;
+            challenge.homeScore = homeScore;
+            challenge.awayScore = awayScore;
 
-        playerService.update(player._id, player);
-        challengeService.update(challenge._id, challenge);
-        this.setState({
-            visible: true
-        })     
+            await playerService.update(player._id, player);
+            await challengeService.update(challenge._id, challenge);
+            this.setState({
+                visible: true
+            })
+        } 
+
+        else {
+            const challenge = this.props.route.params.challenge;
+
+            challengeService.decline(challenge._id, challenge);
+            this.setState({
+                noCoins: true
+            })
+        }
+
     }
 
     DeclineChallenge = () => {
@@ -149,21 +163,20 @@ class ChallengeScore extends Component {
         challengeService.decline(challenge._id, challenge);
         this.setState({
             decline: true
-        })     
+        })
     }
-
 
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.container2}>
-                    <Text style={styles.text}>Score Domicile :</Text>
+                    <Text style={styles.text}>{this.props.route.params.duel.match.homeTeam} :</Text>
                     <Button title="+" onPress={this.IncrementHomeGoals} />
                     <Text style={styles.text}>{this.state.homeScore}</Text>
                     <Button title="-" onPress={this.DecreaseHomeGoals} />
                 </View>
                 <View style={styles.container2}>
-                    <Text style={styles.text}>Score Extérieur :</Text>
+                    <Text style={styles.text}>{this.props.route.params.duel.match.awayTeam} :</Text>
                     <Button title="+" onPress={this.IncrementAwayGoals} />
                     <Text style={styles.text}>{this.state.awayScore}</Text>
                     <Button title="-" onPress={this.DecreaseAwayGoals} />
@@ -183,13 +196,12 @@ class ChallengeScore extends Component {
                         alignItems: 'center',
                         backgroundColor: 'green',
                         borderRadius: '50%',
-                        width: '100%',
+                        width: '100%'
                     }}><Text>🤓</Text></View>}
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Text style={{ marginTop: -16, marginBottom: 32 }}>Vous avez accepté le challenge ! </Text>
+                    style={{ backgroundColor: 'white' }}>
+                    <Text style={{ marginTop: -16, marginBottom: 32 }}> Vous avez accepté le challenge ! </Text>
                     <TouchableOpacity style={styles.btn} onPress={() => this.onPress()}>
-                        <Text style={styles.btnText}>OK</Text>
+                        <Text style={styles.btnText}> OK </Text>
                     </TouchableOpacity>
                 </FancyAlert>
                 <FancyAlert
@@ -201,13 +213,29 @@ class ChallengeScore extends Component {
                         alignItems: 'center',
                         backgroundColor: 'red',
                         borderRadius: '50%',
-                        width: '100%',
+                        width: '100%'
                     }}><Text>🤓</Text></View>}
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Text style={{ marginTop: -16, marginBottom: 32 }}>Vous avez refusé le challenge ... </Text>
+                    style={{ backgroundColor: 'white' }}>
+                    <Text style={{ marginTop: -16, marginBottom: 32 }}> Vous avez refusé le challenge... </Text>
                     <TouchableOpacity style={styles.btnDecline} onPress={() => this.decline()}>
-                        <Text style={styles.btnText}>OK</Text>
+                        <Text style={styles.btnText}> OK </Text>
+                    </TouchableOpacity>
+                </FancyAlert>
+                <FancyAlert
+                    visible={this.state.noCoins}
+                    icon={<View style={{
+                        flex: 1,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'red',
+                        borderRadius: '50%',
+                        width: '100%'
+                    }}><Text>🤓</Text></View>}
+                    style={{ backgroundColor: 'white' }}>
+                    <Text style={{ marginTop: -16, marginBottom: 32 }}> No more coins ! </Text>
+                    <TouchableOpacity style={styles.btnDecline} onPress={() => this.onPress()}>
+                        <Text style={styles.btnText}> OK </Text>
                     </TouchableOpacity>
                 </FancyAlert>
             </View>

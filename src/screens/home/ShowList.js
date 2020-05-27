@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Card } from 'react-native-elements';
 
+import axios from 'axios';
+
 
 export const BetCurrentRows = ({ posts }) => {
     const bets = posts.map(post => {
@@ -10,6 +12,17 @@ export const BetCurrentRows = ({ posts }) => {
             <View>
                 <View key={post._id} style={styles.rowNormal}>
                     <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
+                    <View>
+                        {post.winner == "HOME_TEAM" ? (
+                            <Text>YOU BET ON : {post.match.homeTeam}{"\n"}</Text>
+                        ) : (post.winner == "AWAY_TEAM" ? (
+                            <Text>YOU BET ON : {post.match.awayTeam}{"\n"}</Text>
+                        ) : (
+                                <Text>YOU BET ON : DRAW{"\n"}</Text>
+                            )
+                            )
+                        }
+                    </View>
                     <Text>BETTING : {post.betting} COINS</Text>
                 </View>
             </View>
@@ -26,7 +39,7 @@ export const BetRows = ({ posts }) => {
             <View>
                 {post.match.winner != post.winner ? (
                     <View key={post._id} style={styles.rowLoser}>
-                        <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
+                        <Text>MATCH : {post.match.homeTeam} {post.match.homeScore} - {post.match.awayScore} {post.match.awayTeam}{"\n"}</Text>
                         {post.match.winner == "HOME_TEAM" ? (
                             <Text>RESULT : {post.match.homeTeam} WINS{"\n"}</Text>
                         ) : (post.match.winner == "AWAY_TEAM" ? (
@@ -36,16 +49,38 @@ export const BetRows = ({ posts }) => {
                             )
                             )
                         }
-                        <Text>BETTING : {post.betting} COINS</Text>
+                        <View>
+                            {post.winner == "HOME_TEAM" ? (
+                                <Text>YOU BET ON : {post.match.homeTeam}{"\n"}</Text>
+                            ) : (post.winner == "AWAY_TEAM" ? (
+                                <Text>YOU BET ON : {post.match.awayTeam}{"\n"}</Text>
+                            ) : (
+                                    <Text>YOU BET ON : DRAW{"\n"}</Text>
+                                )
+                                )
+                            }
+                        </View>
+                        <View>
+                            <Text>BETTING : {post.betting} COINS</Text>
+                        </View>
                     </View>) : (
                         <View key={post._id} style={styles.rowWinner}>
-                            <Text>MATCH : {post.match.homeTeam} VS {post.match.awayTeam}{"\n"}</Text>
+                            <Text>MATCH : {post.match.homeTeam} {post.match.homeScore} - {post.match.awayScore} {post.match.awayTeam}{"\n"}</Text>
                             {post.match.winner == "HOME_TEAM" ? (
-                                <Text>RESULT : {post.match.homeTeam} WINS{"\n"}</Text>
+                                <View>
+                                    <Text>RESULT : {post.match.homeTeam} WINS{"\n"}</Text>
+                                    <Text>YOU BET ON : {post.match.homeTeam}{"\n"}</Text>
+                                </View>
                             ) : (post.match.winner == "AWAY_TEAM" ? (
-                                <Text>RESULT : {post.match.awayTeam} WINS{"\n"}</Text>
+                                <View>
+                                    <Text>RESULT : {post.match.awayTeam} WINS{"\n"}</Text>
+                                    <Text>YOU BET ON : {post.match.awayTeam}{"\n"}</Text>
+                                </View>
                             ) : (
-                                    <Text>RESULT : DRAW {"\n"}</Text>
+                                    <View>
+                                        <Text>RESULT : DRAW {"\n"}</Text>
+                                        <Text>YOU BET ON : DRAW{"\n"}</Text>
+                                    </View>
                                 )
                                 )
                             }
@@ -78,6 +113,70 @@ export const DuelRows = ({ posts, navigation }) => {
                 </Card>
             </TouchableOpacity>
         )
+    })
+    return (
+        <View>{duels}</View>
+    )
+}
+
+export const DuelRowsHistory = ({ player, posts }) => {
+    const duels = posts.map(post => {
+        console.log(post);
+        if (post.duel.winner == player.username && post.player2.opponent.username == player.username) {
+            return (
+                <View key={post.duel._id} style={styles.rowWinner}>
+                    <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>You won : {post.player1.betting * 2} Coins by betting on {post.player1.homeScore} - {post.player1.awayScore}{"\n"}</Text>
+                    <Text>Against : "{post.player1.opponent.username}" who bet on {post.player2.homeScore} - {post.player2.awayScore}</Text>
+                </View>
+            )
+        }
+        if (post.duel.winner == player.username && post.player1.opponent.username == player.username) {
+            return (
+                <View key={post.duel._id} style={styles.rowWinner}>
+                    <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>You won : {post.player2.betting * 2} Coins by betting on {post.player2.homeScore} - {post.player2.awayScore}{"\n"}</Text>
+                    <Text>Against : "{post.player2.opponent.username}" who bet on {post.player1.homeScore} - {post.player1.awayScore}</Text>
+                </View>
+            )
+        }
+
+        if (post.duel.winner != player.username && post.duel.winner != "DRAW" && post.player2.opponent.username == player.username) {
+            return (
+                <View key={post.duel._id} style={styles.rowLoser}>
+                    <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>You lost : {post.player1.betting} Coins by betting on {post.player1.homeScore} - {post.player1.awayScore}{"\n"}</Text>
+                    <Text>Against : "{post.player1.opponent.username}" who bet on {post.player2.homeScore} - {post.player2.awayScore}</Text>
+                </View>
+            )
+        }
+        if (post.duel.winner != player.username && post.duel.winner != "DRAW" && post.player1.opponent.username == player.username) {
+            return (
+                <View key={post.duel._id} style={styles.rowLoser}>
+                    <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>You lost : {post.player2.betting} Coins by betting on {post.player2.homeScore} - {post.player2.awayScore}{"\n"}</Text>
+                    <Text>Against : "{post.player2.opponent.username}" who bet on {post.player1.homeScore} - {post.player1.awayScore}</Text>
+                </View>
+            )
+        }
+        if (post.duel.winner == "DRAW" && post.player2.opponent.username == player.username) {
+            return (
+                <View key={post.duel._id} style={styles.rowNormal}>
+                    <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>Draw with: "{post.player1.opponent.username}" who bet on {post.player2.homeScore} - {post.player2.awayScore}{"\n"}</Text>
+                    <Text>You bet on : {post.player1.homeScore} - {post.player1.awayScore}</Text>
+                </View>
+            )
+        }
+        if (post.duel.winner == "DRAW" && post.player1.opponent.username == player.username) {
+            return (
+                <View key={post.duel._id} style={styles.rowNormal}>
+                    <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
+                    <Text>Draw with: "{post.player2.opponent.username}" who bet on {post.player1.homeScore} - {post.player1.awayScore}{"\n"}</Text>
+                    <Text>You bet on : {post.player2.homeScore} - {post.player2.awayScore}</Text>
+                </View>
+            )
+        }
     })
     return (
         <View>{duels}</View>

@@ -43,15 +43,20 @@ class MatchesScreen extends Component {
     state = {
         loading: false,
         matchsSA: [],
-        matchsLiga: []
+        matchsLiga: [],
+        matchsPL: [],
+        matchsBL: []
     }
 
     async componentDidMount() {
-        this.setState({ loading: true });
-        const postsSA = await this.props.competitionService.fetchCompetitionMatchesSA();
 
+        const postsSA = await this.props.competitionService.fetchCompetitionMatchesSA();
         const postsLiga = await this.props.competitionService.fetchCompetitionMatchesLiga();
-        this.setState({ loading: false, matchsSA: postsSA, matchsLiga: postsLiga });
+        const postsPL = await this.props.competitionService.fetchCompetitionMatchesPL();
+        const postsBL = await this.props.competitionService.fetchCompetitionMatchesBL();
+
+        this.setState({ matchsSA: postsSA, matchsLiga: postsLiga, matchsPL: postsPL, matchsBL: postsBL });
+
     }
 
 
@@ -60,6 +65,8 @@ class MatchesScreen extends Component {
 
         const postsSA = [];
         const postsLiga = [];
+        const postsPL = [];
+        const postsBL = [];
         let matchday = 0;
 
         this.state.matchsSA.forEach(match => {
@@ -86,8 +93,28 @@ class MatchesScreen extends Component {
             }
         });
 
-        const data = [{ title: 'Serie A', matchs: postsSA, logo: 'https://upload.wikimedia.org/wikipedia/fr/8/89/SerieALogo.png' },
-        { title: 'Liga', matchs: postsLiga, logo: 'https://banner2.cleanpng.com/20180716/rbh/kisspng-segunda-divisin-201617-la-liga-spain-premier-la-liga-5b4cda9b090396.3229595515317633550369.jpg' }];
+        this.state.matchsPL.forEach(match => {
+            if (match.matchday == matchday) {
+                postsPL.push({
+                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
+                })
+            }
+        });
+
+        this.state.matchsBL.forEach(match => {
+            if (match.matchday == matchday) {
+                postsBL.push({
+                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
+                })
+            }
+        });
+
+        const data = [{ title: 'Serie A', matchs: postsSA, logo: require('../../../logoSA.png') },
+        { title: 'Liga', matchs: postsLiga, logo: require('../../../logoLiga.jpg') },
+        { title: 'Premier League', matchs: postsPL, logo: require('../../../logoPL.png') },
+        { title: 'BundesLiga', matchs: postsBL, logo: require('../../../logoBL.png') }];
 
         return (
             <View style={styles.container}>
@@ -95,7 +122,7 @@ class MatchesScreen extends Component {
                     data={data}
                     getChildrenName={(node) => 'matchs'}
                     onNodePressed={(node) => {
-                        if (node.title !== 'Serie A' && node.title !== 'Liga') {
+                        if (node.title !== 'Serie A' && node.title !== 'Liga' && node.title !== 'Premier League' && node.title !== 'BundesLiga') {
                             this.props.navigation.navigate('Jouer', { match: node, player: player })
                         }
                     }
@@ -103,9 +130,8 @@ class MatchesScreen extends Component {
                     renderNode={(node, level) => (
                         <NestedRow
                             level={level}
-                            style={styles.row}
-                        >
-                            <Image source={{ uri: node.logo }} style={{ width: 40, height: 50 }} />
+                            style={styles.row}>
+                            <Image source={node.logo} style={{ width: 50, height: 60 }} />
                             <Text style={styles.text}>{node.title}</Text>
                         </NestedRow>
                     )}

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
-import { Table, Row, Rows } from 'react-native-table-component';
-import { BetService } from '../../services/bet.service';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
 import { BetCurrentRows } from '../home/ShowList';
 
-import { getBets } from '../../actions/betActions';
+import { getBetsCurrent, getBetsHistory } from '../../actions/betActions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const betService = new BetService();
 
 class BetsCurrent extends Component {
     constructor(props) {
@@ -17,15 +14,20 @@ class BetsCurrent extends Component {
     }
 
     async componentDidMount() {
-        this.props.getBets(this.props.player._id);
+        this.props.getBetsCurrent(this.props.player._id);
     }
 
     render() {
         const { bets } = this.props.bet;
         return (
-            <ScrollView style={styles.container}>
+            bets.length > 0 ?
+            (<ScrollView style={styles.container}>
                 <BetCurrentRows posts={bets} />
-            </ScrollView>
+             </ScrollView>) : (
+                <View style={styles.textContainer}>
+                    <Text style={styles.text}>Aucun pari à afficher</Text>
+                </View>
+            )
         )
     }
 }
@@ -48,17 +50,19 @@ const styles = StyleSheet.create({
     text: {
         color: '#ffffff',
         fontSize: 15
+    },
+    textContainer: {
+        flex: 1,
+        backgroundColor: '#384259',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
-
 });
 
-BetsCurrent.propTypes = {
-    getBets: PropTypes.func.isRequired
-}
 
 const mapStateToProps = state => ({
     player: state.auth.player,
     bet: state.bet
 });
 
-export default connect(mapStateToProps, { getBets })(BetsCurrent);
+export default connect(mapStateToProps, { getBetsCurrent })(BetsCurrent);

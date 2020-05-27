@@ -39,7 +39,7 @@ class DuelsList extends Component {
                             });
                     }}>
                     <Card>
-                        <Text>MATCH : {post.duel.match.homeTeam} VS {post.duel.match.awayTeam}{"\n"}</Text>
+                        <Text>MATCH : {duel.match.homeTeam} VS {duel.match.awayTeam}{"\n"}</Text>
                         <Text>CHALLENGER : {post.opponent.username.toUpperCase()}{"\n"}</Text>
                         <Text>BETTING : {duel.challenged.betting} COINS</Text>
                     </Card>

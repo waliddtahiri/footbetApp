@@ -1,11 +1,9 @@
-import BetsCurrent from '../history/BetsCurrent';
 import Home from './Home';
 import ChallengeScore from './ChallengeScore';
-import BetsHistory from '../history/BetsHistory';
+import HomeStackScreen from './HomeStackScreen';
 
 export {
-    BetsCurrent,
     Home,
     ChallengeScore,
-    BetsHistory
+    HomeStackScreen
 };
