@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import {
-    Login, SignUp, BetsCurrent, Home, ChallengeScore, BetsHistory,
-    MatchesScreen, BetScreen, DuelScreen, ModalChoice, DuelsHistory, HomeStackScreen
+    Login, SignUp, BetsCurrent, BetsHistory, MatchesScreen, BetScreen, DuelScreen, ModalChoice,
+    DuelsCurrent, DuelsHistory, HomeStackScreen, MatchesStackScreen
 } from './screens';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Button, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { logout } from './actions/authActions';
-
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -22,70 +19,7 @@ const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 const Mat = createMaterialTopTabNavigator();
 
-const MatchesStackScreen = () => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen name="Matches" component={MatchesScreen}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#ff1493',
-                    }
-                }}
-            />
-            <Stack.Screen name="Jouer" component={ModalChoice}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#ff1493',
-                    }
-                }}
-            />
-            <Stack.Screen name="Betting" component={BetScreen}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#ff1493',
-                    }
-                }}
-            />
-            <Stack.Screen name="Duel" component={DuelScreen}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#ff1493',
-                    }
-                }}
-            />
-        </Stack.Navigator>
-    );
-}
-
-// const HomeStackScreen = (props) => {
-//     return (
-//         <Stack.Navigator>
-//             <Stack.Screen name="Home" component={Home}
-//                 options={{
-//                     headerStyle: {
-//                         backgroundColor: '#ff1493',
-//                     },
-//                     headerRight: () => (
-//                         // <Button
-//                         //     onPress={() => props.logout()}
-//                         //     title="Logout"
-//                         // />
-//                         <TouchableHighlight onPress={() => props.logout()}>
-//                             <MaterialCommunityIcons name="logout" size={26} />
-//                         </TouchableHighlight>
-//                     )
-//                 }} />
-//             <Stack.Screen name="Challenge" component={ChallengeScore}
-//                 options={{
-//                     headerStyle: {
-//                         backgroundColor: '#ff1493',
-//                     }
-//                 }} />
-//         </Stack.Navigator>
-//     );
-// }
-
-const MatTab1 = () => {
+const MatTabBet = () => {
     return (
         <Mat.Navigator>
             <Mat.Screen name="En cours" component={BetsCurrent} />
@@ -94,11 +28,20 @@ const MatTab1 = () => {
     );
 }
 
+const MatTabDuels = () => {
+    return (
+        <Mat.Navigator>
+            <Mat.Screen name="En cours" component={DuelsCurrent} />
+            <Mat.Screen name="Historique" component={DuelsHistory} />
+        </Mat.Navigator>
+    );
+}
+
 const MatTab = () => {
     return (
         <Mat.Navigator>
-            <Mat.Screen name="Paris Solo" component={MatTab1} />
-            <Mat.Screen name="Historique Duels" component={DuelsHistory} />
+            <Mat.Screen name="Paris" component={MatTabBet} />
+            <Mat.Screen name="Duels" component={MatTabDuels} />
         </Mat.Navigator>
     );
 }
@@ -130,16 +73,10 @@ class AllScreens extends Component {
                     <Stack.Screen name="SignUp" component={SignUp} />
                 </Stack.Navigator>
             ) : (
-                    // <Tab.Navigator>
-                    //     <Tab.Screen name="Home" component={props => <HomeStackScreen {...props} logout={this.deconnexion} />} />
-                    //     <Tab.Screen name="Matches" component={MatchesStackScreen} />
-                    //     <Tab.Screen name="History" component={MatTab} />
-                    // </Tab.Navigator >
                     <Tab.Navigator
                         initialRouteName="Home"
                         activeColor='#ff1493'
-                        style={{ backgroundColor: 'tomato' }}
-                    >
+                        style={{ backgroundColor: 'tomato' }}>
                         <Tab.Screen
                             name="Home"
                             component={HomeStackScreen}
@@ -177,7 +114,6 @@ class AllScreens extends Component {
                 )
         )
     }
-
 }
 
 const mapStateToProps = state => ({

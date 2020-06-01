@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import {
-    Home, ChallengeScore
-} from '.';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
-
 import { createStackNavigator } from '@react-navigation/stack';
+import {MatchesScreen, BetScreen, DuelScreen, ModalChoice} from '../../screens';
+import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { logout } from '../../actions/authActions';
 import { connect } from 'react-redux';
 
+
 const Stack = createStackNavigator();
 
-class HomeStackScreen extends Component {
+class MatchesStackScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -21,7 +20,7 @@ class HomeStackScreen extends Component {
     render() {
         return (
             <Stack.Navigator>
-                <Stack.Screen name="Home" component={Home}
+                <Stack.Screen name="Matches" component={MatchesScreen}
                     options={{
                         headerStyle: {
                             backgroundColor: '#ff1493',
@@ -37,16 +36,33 @@ class HomeStackScreen extends Component {
                                 </TouchableHighlight>
                             </View>
                         )
-                    }} />
-                <Stack.Screen name="Challenge" component={ChallengeScore}
+                    }}
+                />
+                <Stack.Screen name="Jouer" component={ModalChoice}
                     options={{
                         headerStyle: {
                             backgroundColor: '#ff1493',
                         }
-                    }} />
+                    }}
+                />
+                <Stack.Screen name="Betting" component={BetScreen}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#ff1493',
+                        }
+                    }}
+                />
+                <Stack.Screen name="Duel" component={DuelScreen}
+                    options={{
+                        headerStyle: {
+                            backgroundColor: '#ff1493',
+                        }
+                    }}
+                />
             </Stack.Navigator>
         );
     }
+    
 }
 
 const styles = StyleSheet.create({
@@ -72,11 +88,10 @@ const styles = StyleSheet.create({
     }
 });
 
-
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     player: state.auth.player,
     error: state.error
 });
 
-export default connect(mapStateToProps, { logout })(HomeStackScreen);
+export default connect(mapStateToProps, { logout })(MatchesStackScreen);

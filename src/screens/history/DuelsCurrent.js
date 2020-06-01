@@ -1,31 +1,27 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
-import { DuelRowsHistory } from '../home/ShowList';
+import { DuelRowsCurrent } from '../home/ShowList';
 
-import { getDuelsHistory } from '../../actions/duelActions';
+import { getDuelsCurrent } from '../../actions/duelActions';
 import { connect } from 'react-redux';
 
-import axios from 'axios'
 
-import PropTypes from 'prop-types';
-
-
-class DuelsHistory extends Component {
+class DuelsCurrent extends Component {
     constructor(props) {
         super(props);
     }
 
     async componentDidMount() {
-        this.props.getDuelsHistory(this.props.player.username);
+        this.props.getDuelsCurrent(this.props.player.username);
     }
 
     render() {
-        const { duelsHistory } = this.props.duel;
+        const { duels } = this.props.duel;
         return (
-            duelsHistory.length > 0 ?
+            duels.length > 0 ?
                 (<ScrollView style={styles.container}>
-                    <DuelRowsHistory player={this.props.player} posts={duelsHistory} />
+                    <DuelRowsCurrent player={this.props.player} posts={duels} />
                  </ScrollView>) : (
                     <View style={styles.textContainer}>
                         <Text style={styles.text}>Aucun duel à afficher</Text>
@@ -66,4 +62,4 @@ const mapStateToProps = state => ({
     duel: state.duel
 });
 
-export default connect(mapStateToProps, { getDuelsHistory })(DuelsHistory);
+export default connect(mapStateToProps, { getDuelsCurrent })(DuelsCurrent);

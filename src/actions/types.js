@@ -13,3 +13,4 @@ export const GET_BETS_HISTORY = "GET_BETS_HISTORY";
 export const ADD_BET = "ADD_BET";
 export const DELETE_BET = "DELETE_BET";
 export const GET_DUELS = "GET_DUELS";
+export const GET_DUELS_HISTORY = "GET_DUELS_HISTORY";

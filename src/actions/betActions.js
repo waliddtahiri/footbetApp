@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_BETS, GET_BETS_HISTORY, ADD_BET } from './types';
+import { GET_BETS, GET_BETS_HISTORY } from './types';
 
 export const getBetsCurrent = (id) => dispatch => {
     axios.get('http://192.168.0.239:5000/bets')
@@ -37,9 +37,3 @@ export const getBetsHistory = (id) => dispatch => {
         })
 };
 
-export const addBet = bet => {
-    return {
-        type: ADD_BET,
-        payload: bet
-    }
-}

@@ -78,7 +78,7 @@ class MatchesScreen extends Component {
         this.state.matchsSA.forEach(match => {
             if (match.matchday == matchday) {
                 postsSA.push({
-                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    title: `${match.homeTeam} VS ${match.awayTeam}`,
                     info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
                 })
             }
@@ -87,7 +87,7 @@ class MatchesScreen extends Component {
         this.state.matchsLiga.forEach(match => {
             if (match.matchday == matchday) {
                 postsLiga.push({
-                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    title: `${match.homeTeam} VS ${match.awayTeam}`,
                     info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
                 })
             }
@@ -96,7 +96,7 @@ class MatchesScreen extends Component {
         this.state.matchsPL.forEach(match => {
             if (match.matchday == matchday) {
                 postsPL.push({
-                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    title: `${match.homeTeam} VS ${match.awayTeam}`,
                     info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
                 })
             }
@@ -105,7 +105,7 @@ class MatchesScreen extends Component {
         this.state.matchsBL.forEach(match => {
             if (match.matchday == matchday) {
                 postsBL.push({
-                    title: `${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`,
+                    title: `${match.homeTeam} VS ${match.awayTeam}`,
                     info: match, homeTeam: match.homeTeam, awayTeam: match.awayTeam
                 })
             }
@@ -128,9 +128,7 @@ class MatchesScreen extends Component {
                     }
                     }
                     renderNode={(node, level) => (
-                        <NestedRow
-                            level={level}
-                            style={styles.row}>
+                        <NestedRow level={level} style={styles.row}>
                             <Image source={node.logo} style={{ width: 50, height: 60 }} />
                             <Text style={styles.text}>{node.title}</Text>
                         </NestedRow>
