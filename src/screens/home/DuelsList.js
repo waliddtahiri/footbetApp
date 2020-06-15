@@ -34,14 +34,15 @@ class DuelsList extends Component {
                         this.setDueltoParent(post.duel);
                         navigation.navigate('Challenge',
                             {
-                                duel: post.duel, challenge: post.duel.challenged,
+                                duel: post.duel, challenge: post.duel.challenged, opponent: post.opponent,
                                 update: () => this.updatePost(post.duel)
                             });
                     }}>
                     <Card>
-                        <Text>MATCH : {duel.match.homeTeam} VS {duel.match.awayTeam}{"\n"}</Text>
+                        {/* <Text>MATCH : {duel.match.homeTeam} VS {duel.match.awayTeam}{"\n"}</Text>
                         <Text>CHALLENGER : {post.opponent.username.toUpperCase()}{"\n"}</Text>
-                        <Text>BETTING : {duel.challenged.betting} COINS</Text>
+                        <Text>BETTING : {duel.challenged.betting} COINS</Text> */}
+                        <Text>You are challenged by {post.opponent.username.toUpperCase()} !</Text>
                     </Card>
                 </TouchableOpacity>
             )

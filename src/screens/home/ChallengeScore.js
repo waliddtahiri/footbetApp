@@ -20,13 +20,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         color: '#ffffff',
-        marginTop: 30
+        marginTop: 20
     },
     text: {
         color: '#ffffff',
-        fontSize: 15,
-        textAlign: 'center',
-        lineHeight: 70,
+        fontSize: 15
     },
     btn: {
         borderRadius: 32,
@@ -144,7 +142,7 @@ class ChallengeScore extends Component {
             this.setState({
                 visible: true
             })
-        } 
+        }
 
         else {
             const challenge = this.props.route.params.challenge;
@@ -169,6 +167,11 @@ class ChallengeScore extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <View>
+                    <Text style={styles.text}>MATCH : {this.props.route.params.duel.match.homeTeam} VS {this.props.route.params.duel.match.awayTeam}{"\n"}</Text>
+                    <Text style={styles.text}>CHALLENGER : {this.props.route.params.opponent.username.toUpperCase()}{"\n"}</Text>
+                    <Text style={styles.text}>BETTING : {this.props.route.params.challenge.betting} COINS {"\n"}{"\n"}{"\n"}</Text>
+                </View>
                 <View style={styles.container2}>
                     <Text style={styles.text}>{this.props.route.params.duel.match.homeTeam} :</Text>
                     <Button title="+" onPress={this.IncrementHomeGoals} />

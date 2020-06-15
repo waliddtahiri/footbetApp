@@ -98,32 +98,32 @@ class DuelScreen extends Component {
     }
 
     IncrementItem = () => {
-        this.setState({ betting: this.state.betting + 10 });
+        this.setState({ betting: this.state.betting + 10, errors: [] });
     }
 
     DecreaseItem = () => {
         if (this.state.betting > 0) {
-            this.setState({ betting: this.state.betting - 10 });
+            this.setState({ betting: this.state.betting - 10, errors: [] });
         }
     }
 
     IncrementHomeGoals = () => {
-        this.setState({ homeScore: this.state.homeScore + 1 });
+        this.setState({ homeScore: this.state.homeScore + 1, errors: [] });
     }
 
     IncrementAwayGoals = () => {
-        this.setState({ awayScore: this.state.awayScore + 1 });
+        this.setState({ awayScore: this.state.awayScore + 1, errors: [] });
     }
 
     DecreaseHomeGoals = () => {
         if (this.state.homeScore > 0) {
-            this.setState({ homeScore: this.state.homeScore - 1 });
+            this.setState({ homeScore: this.state.homeScore - 1, errors: [] });
         }
     }
 
     DecreaseAwayGoals = () => {
         if (this.state.awayScore > 0) {
-            this.setState({ awayScore: this.state.awayScore - 1 });
+            this.setState({ awayScore: this.state.awayScore - 1, errors: [] });
         }
     }
 
@@ -203,7 +203,8 @@ class DuelScreen extends Component {
 
         const onChangeHandler = async (value) => {
             this.setState({
-                opponent: value
+                opponent: value,
+                errors: []
             })
             let player2 = await this.props.playerService.getOne(this.state.opponent);
             this.setState({

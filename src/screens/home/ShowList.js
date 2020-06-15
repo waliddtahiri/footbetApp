@@ -151,7 +151,7 @@ export const DuelRowsHistory = ({ player, posts }) => {
                 return (
                     <View key={post.duel._id} style={styles.rowNormal}>
                         <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
-                        <Text>Bet Declined {"\n"}</Text>
+                        <Text>Challenge Declined ... {"\n"}</Text>
                         <Text>Against : "{post.player1.opponent.username}"</Text>
                     </View>
                 )
@@ -160,7 +160,7 @@ export const DuelRowsHistory = ({ player, posts }) => {
                 return (
                     <View key={post.duel._id} style={styles.rowNormal}>
                         <Text>Match : {post.duel.match.homeTeam} {post.duel.match.homeScore} - {post.duel.match.awayScore} {post.duel.match.awayTeam}{"\n"}</Text>
-                        <Text>Bet Declined {"\n"}</Text>
+                        <Text>Challenge Declined {"\n"}</Text>
                         <Text>Against : "{post.player1.opponent.username}"</Text>
                     </View>
                 )

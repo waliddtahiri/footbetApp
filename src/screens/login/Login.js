@@ -18,6 +18,7 @@ import {
 
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import footBetLogo from '../../../footbetApp.jpg';
 
 
 class Login extends Component {
@@ -86,16 +87,16 @@ class Login extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <ImageBackground source={{ uri: 'https://free-hd-wallpapers.info/wp-content/uploads/2018/03/football-pitch-wallpaper-football-field-wallpaper-walls-15-with-football-field-wallpaper-walls.jpg' }}
+                <ImageBackground source={footBetLogo}
                     style={styles.backgroundImage}>
                     <View style={styles.content}>
                         <Text style={styles.logo}> FootBet </Text>
                         <View style={styles.inputContainer}>
                             <TextInput underlineColorAndroid='transparent' style={styles.input}
-                                onChangeText={(username) => this.setState({ username })} value={this.state.username}
+                                onChangeText={(username) => this.setState({ username, msg: null })} value={this.state.username}
                                 placeholder='username' />
                             <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
-                                onChangeText={(password) => this.setState({ password })} value={this.state.password}
+                                onChangeText={(password) => this.setState({ password, msg: null })} value={this.state.password}
                                 placeholder='password' />
                             <View>
                                 <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>

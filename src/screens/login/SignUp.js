@@ -93,10 +93,10 @@ class SignUp extends Component {
                     <Text style={styles.logo}> FootBet </Text>
                     <View style={styles.inputContainer}>
                         <TextInput underlineColorAndroid='transparent' style={styles.input}
-                            onChangeText={(username) => this.setState({ username })} value={this.state.username}
+                            onChangeText={(username) => this.setState({ username, msg: null })} value={this.state.username}
                             placeholder='username' />
                         <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input}
-                            onChangeText={(password) => this.setState({ password })} value={this.state.password}
+                            onChangeText={(password) => this.setState({ password, msg: null })} value={this.state.password}
                             placeholder='password' />
                         <View style={styles.row}>
                             <TouchableOpacity onPress={this.goBack} style={styles.buttonContainer}>

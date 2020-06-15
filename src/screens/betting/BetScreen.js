@@ -86,32 +86,32 @@ class BetScreen extends Component {
     }
 
     IncrementItem = () => {
-        this.setState({ betting: this.state.betting + 10 });
+        this.setState({ betting: this.state.betting + 10, errors: [] });
     }
 
     DecreaseItem = () => {
         if (this.state.betting > 0) {
-            this.setState({ betting: this.state.betting - 10 });
+            this.setState({ betting: this.state.betting - 10, errors: [] });
         }
     }
 
     IncrementHomeGoals = () => {
-        this.setState({ homeScore: this.state.homeScore + 1 });
+        this.setState({ homeScore: this.state.homeScore + 1, errors: [] });
     }
 
     IncrementAwayGoals = () => {
-        this.setState({ awayScore: this.state.awayScore + 1 });
+        this.setState({ awayScore: this.state.awayScore + 1, errors: [] });
     }
 
     DecreaseHomeGoals = () => {
         if (this.state.homeScore > 0) {
-            this.setState({ homeScore: this.state.homeScore - 1 });
+            this.setState({ homeScore: this.state.homeScore - 1, errors: [] });
         }
     }
 
     DecreaseAwayGoals = () => {
         if (this.state.awayScore > 0) {
-            this.setState({ awayScore: this.state.awayScore - 1 });
+            this.setState({ awayScore: this.state.awayScore - 1, errors: [] });
         }
     }
 
@@ -172,7 +172,7 @@ class BetScreen extends Component {
             console.log(bet);
             this.props.playerService.addBet(player._id, bet);
 
-            this.props.addBet(bet);
+            //this.props.betService.addBet(bet);
 
             this.setState({
                 visible: true
@@ -194,7 +194,7 @@ class BetScreen extends Component {
 
         return (
             <View style={styles.container}>
-                <Text> COINS : {player.coins}</Text>
+                <Text> COINS : {player.coins}{"\n"}</Text>
                 <ButtonGroup
                     onPress={this.updateIndex}
                     selectedIndex={selectedIndex}
